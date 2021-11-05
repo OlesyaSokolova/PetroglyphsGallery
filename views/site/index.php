@@ -30,7 +30,13 @@ $this->title = 'Petroglyphs Gallery';
         color: #000; }
     .petroglyph-item:hover {
         text-decoration: none;
-        border: solid 2px #7288e1; }
+        border: solid 2px #7288e1;
+    }
+    img {
+        vertical-align: middle;
+        max-width: 100%;
+        height: auto;
+    }
 </style>
 
 <div id="w0" class="list-view">
@@ -43,7 +49,7 @@ $this->title = 'Petroglyphs Gallery';
                 <div class="col-xs-12 col-sm-6 col-md-4" style="position: relative; left: 0; top: 0;">
                     <a href="<?= Url::to(['archsite/view', 'id' => $test_value['id']]) ?>" class="petroglyph-item">
                         <div class="row">
-                            <?= Html::img(Gallery::SRC_IMAGE.$test_value['image'], ['class' => 'img-responsive']) ?>
+                            <?= Html::img(Gallery::SRC_IMAGE.$test_value['image'], ['class' => 'img']) ?>
                         </div>
                         <h3>
                             <?= $test_value['text_value'] ?>
