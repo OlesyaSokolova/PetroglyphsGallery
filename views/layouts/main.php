@@ -9,9 +9,10 @@ use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
-
 AppAsset::register($this);
+
 ?>
+
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
@@ -22,6 +23,7 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
+
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
@@ -56,6 +58,13 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 </header>
+<style>
+    @media (min-width: 1200px) {
+        .container {
+            max-width: 1500px;
+        }
+    }
+</style>
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <?= Breadcrumbs::widget([

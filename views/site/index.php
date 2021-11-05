@@ -3,23 +3,21 @@
 /* @var $this yii\web\View */
 
 use app\models\Gallery;
-use yii\bootstrap4\BootstrapAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Petroglyphs Gallery';
 
+
 //echo "<img src='http://localhost/petroglyphs/storage/test_png.png'>";
-/*$this->registerCssFile("@web/css/site.css", [
-    'depends' => [BootstrapAsset::class],
-    'media' => 'print',
-], 'css-print-theme');*/
+
 ?>
 <div class="site-index">
     <div class="jumbotron text-center bg-transparent">
         <h1 class="display-4">All petroglyphs</h1>
     </div>
 </div>
+
 <style>
     .petroglyph-item {
         display: block;
@@ -64,7 +62,6 @@ $this->title = 'Petroglyphs Gallery';
         }
     }
 </style>
-
 <div id="w0" class="list-view">
     <?php
     $gallery = new Gallery();
@@ -86,5 +83,3 @@ $this->title = 'Petroglyphs Gallery';
         </div>
     <?php endif; ?>
 </div>
-
-
