@@ -56,16 +56,18 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 </header>
-
-<main role="main" class="flex-shrink-0">
-    <div class="container-fluid">
+<style>
+    .maxWidth {
+        max-width:2500px;
+    }
+</style>
+    <div class="container-fluid maxWidth">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
-</main>
 
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container">
