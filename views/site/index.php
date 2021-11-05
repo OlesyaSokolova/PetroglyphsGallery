@@ -16,7 +16,6 @@ $this->title = 'Petroglyphs Gallery';
 ], 'css-print-theme');*/
 ?>
 <div class="site-index">
-
     <div class="jumbotron text-center bg-transparent">
         <h1 class="display-4">All petroglyphs</h1>
     </div>
@@ -33,14 +32,13 @@ $this->title = 'Petroglyphs Gallery';
         border: solid 2px #7288e1; }
 </style>
 
-<div id="w0" class="list-view">
     <?php
     $gallery = new Gallery();
     $test_values = $gallery->getTestValues();
     if (!empty($test_values)): ?>
-        <div class="row petroglyphs" style="position: relative; height: 5462.8px;">
+        <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($test_values as $test_value): ?>
-                <div class="col-xs-12 col-sm-6 col-md-4" style="position: relative; left: 0; top: 0;">
+                <div class="col-xs-12 col-sm-6 col-md-4" style="position: relative;">
                     <a href="<?= Url::to(['archsite/view', 'id' => $test_value['id']]) ?>" class="petroglyph-item">
                         <div class="row">
                             <?= Html::img(Gallery::SRC_IMAGE.$test_value['image'], ['class' => 'img-responsive']) ?>
@@ -53,6 +51,5 @@ $this->title = 'Petroglyphs Gallery';
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-</div>
 
 
