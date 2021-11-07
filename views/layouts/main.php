@@ -25,7 +25,7 @@ AppAsset::register($this);
 </head>
 
 <body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+<?php $this->beginBody(); ?>
 
 <header>
     <?php
@@ -39,7 +39,7 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ml-auto justify-content-end'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Home', 'url' => ['/gallery/index']],
             ['label' => 'About', 'url' => ['/site/about']],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
