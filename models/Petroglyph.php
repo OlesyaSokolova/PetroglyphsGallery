@@ -22,14 +22,14 @@ class Petroglyph extends ActiveRecord
         return 'test_table';
     }
 
-    public static function test() {
+  /*  public static function test() {
         //return self::find();
         $posts = Yii::$app->db->createCommand("SELECT id, text_value, image FROM test_table" )
             ->queryAll();
         return $posts;
-    }
+    }*/
 
-    public function getTestValues()
+    /*public function getTestValues()
     {
         $query = $this->select(['id', 'text_value', 'image'] )
             ->from('test_table');
@@ -39,12 +39,12 @@ class Petroglyph extends ActiveRecord
         if (!Yii::$app->user->can('manager')) {
             $query->andWhere(['public' => 1]);
         }
-        return $query;*/
+        return $query;
         $rows = $query->all();
         return $rows;
-    }
+    }*/
 
-    public function getInfoById($id)
+   /* public function getInfoById($id)
     {
         $query = $this->select(['id', 'text_value', 'image'] )
             ->from('test_table');
@@ -53,16 +53,16 @@ class Petroglyph extends ActiveRecord
         if (!Yii::$app->user->can('manager')) {
             $query->andWhere(['public' => 1]);
         }
-        return $query;*/
+        return $query;
         $rows = $query->all();
         return $rows;
-    }
+    }*/
 
-    public static function getDb()
+  /*  public static function getDb()
     {
         // использовать компонент приложения "db"
         return \Yii::$app->db;
-    }
+    }*/
 
     /*public function uniqueValidator() {
         $authManager = Yii::$app->authManager;

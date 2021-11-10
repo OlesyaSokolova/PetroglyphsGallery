@@ -26,14 +26,34 @@ AppAsset::register($this);
 
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody(); ?>
+<style>
+    @media (min-width: 1200px) {
+        .container {
+            max-width: 1500px;
+        }
+    }
+    .wrap {
+       /* min-height: 100%;
+       height: auto;*/
+        margin: 0 auto 20px;
+        padding: 0 0 20px;
+    }
 
-<header>
+    .wrap > .container {
+        padding: 30px 15px 30px;
+    }
+    .footer {
+        position: relative;
+    }
+</style>
+ <div class="wrap">
     <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            //'class' => 'navbar-inverse navbar-dark bg-dark fixed-top'
         ],
     ]);
     echo Nav::widget([
@@ -57,14 +77,10 @@ AppAsset::register($this);
     ]);
     NavBar::end();
     ?>
-</header>
-<style>
-    @media (min-width: 1200px) {
-        .container {
-            max-width: 1500px;
-        }
-    }
-</style>
+
+ </div>
+
+
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <?= Breadcrumbs::widget([
@@ -75,10 +91,15 @@ AppAsset::register($this);
     </div>
 </main>
 
-<footer class="footer mt-auto py-3 text-muted">
+<!--<footer class="footer mt-auto py-3 text-muted">
     <div class="container">
-        <p class="float-left">&copy; My Company <?= date('Y') ?></p>
-        <p class="float-right"><?= Yii::powered() ?></p>
+        <p class="float-left">&copy; My Company <?/*= date('Y') */?></p>
+        <p class="float-right"><?/*= Yii::powered() */?></p>
+    </div>
+</footer>-->
+<footer class="footer">
+    <div class="container">
+        <p class="pull-left">footer, <?= date('Y') ?></p>
     </div>
 </footer>
 

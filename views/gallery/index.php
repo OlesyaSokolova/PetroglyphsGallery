@@ -12,12 +12,16 @@ $this->title = 'Petroglyphs';
 
 //echo "<img src='http://localhost/petroglyphs/storage/test_png.png'>";
 ?>
-<div class="site-index">
+<!--<div class="site-index">
     <div class="jumbotron text-center bg-transparent">
         <h1 class="display-4">All petroglyphs</h1>
     </div>
-</div>
+</div>-->
 <style>
+    h1 {
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
     .petroglyph-item {
         display: block;
         border: solid 2px #e1e1e1;
@@ -61,18 +65,21 @@ $this->title = 'Petroglyphs';
         }
     }
 </style>
+<h1>Все петроглифы</h1>
 <div id="w0" class="list-view">
     <?php if (!empty($petroglyphs)):
         //var_dump($petroglyphs); ?>
         <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($petroglyphs as $petroglyph): ?>
                 <div class="column">
-                    <a href="<?= Url::to(Petroglyph::VIEW_URL.'?id='.$petroglyph['id'], true)?>" class="petroglyph-item">
-                    <div class="row">
-                            <?= Html::img(Petroglyph::SRC_IMAGE.$petroglyph['image'], ['class' => 'img-fluid mb-4']) ?>
+<!--                    <a href="<?/*= Url::to(Petroglyph::VIEW_URL.'?id='.$petroglyph['id'], true)*/?>" class="petroglyph-item">
+-->                        <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
+
+                        <div class="row">
+                            <?= Html::img(Petroglyph::SRC_IMAGE.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
                         </div>
                         <h3>
-                            <?= $petroglyph['text_value'] ?>
+                            <?= $petroglyph->name ?>
                         </h3>
                     </a>
               </div>
