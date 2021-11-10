@@ -62,7 +62,8 @@ $this->title = 'Petroglyphs';
     }
 </style>
 <div id="w0" class="list-view">
-    <?php if (!empty($petroglyphs)):?>
+    <?php if (!empty($petroglyphs)):
+        //var_dump($petroglyphs); ?>
         <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($petroglyphs as $petroglyph): ?>
                 <div class="column">
