@@ -22,6 +22,5 @@ class GalleryController extends Controller
             'petroglyphs' => $petroglyphs,
             'pages' => $pages,
         ]);
-
     }
 }

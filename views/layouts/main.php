@@ -40,7 +40,7 @@ AppAsset::register($this);
     }
 
     .wrap > .container {
-        padding: 30px 15px 30px;
+        padding: 30px 15px 30px
     }
     .footer {
         position: relative;
@@ -57,23 +57,30 @@ AppAsset::register($this);
         ],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ml-auto justify-content-end'],
+        'options' => ['class' => 'navbar-nav nav'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/gallery/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
+            //['label' => 'Home', 'url' => ['/gallery/index']],
+            ['label' => 'О проекте', 'url' => ['/site/about']],
         ],
+    ]);
+
+    $menuItems = [];
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Зарегистрироваться', 'url' => ['/site/signup']];
+    } else {
+        $menuItems[] = '<li>'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
+    echo Nav::widget([
+        'options' => ['class' => 'navbar-nav ml-auto'],
+        'items' => $menuItems,
     ]);
     NavBar::end();
     ?>
