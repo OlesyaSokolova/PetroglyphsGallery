@@ -4,64 +4,54 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-
+/**
+ * Signup form
+ */
 class SignupForm extends Model
 {
-    public $password;
+
     public $email;
-    public $rememberMe = true;
-
-    private $_user = false;
-
+    public $password;
 
     /**
-     * @return array the validation rules.
+     * @inheritdoc
      */
     public function rules()
     {
         return [
-            // login and password are both required
-            [['email', 'password'], 'required'],
-            // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['email', 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Пользователь с таким e-mail уже существует.'],
+            ['password', 'required'],
+            ['password', 'string', 'min' => 6],
         ];
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * Signs user up.
      *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @return User|null the saved model or null if saving fails
      */
-    public function validatePassword($attribute, $params)
-    {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect email or password.');
-            }
-        }
-    }
-
-
     public function signup()
     {
-        if ($this->validate()) {
-            $user = new User();
-            $user->email = $this->email;
-            $user->setPassword($this->password);
-            $user->generateAuthKey();
-            $user->save(false);
-
-            $auth = Yii::$app->authManager;
-            $authorRole = $auth->getRole('author');
-            $auth->assign($authorRole, $user->getId());
-
-            return $user;
+        if (!$this->validate()) {
+            return null;
         }
 
-        return null;
+        $user = new User();
+       // $user->username = $this->username;
+        $user->email = $this->email;
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        $user->save(false);
+
+        $auth = Yii::$app->authManager;
+        $authRole = $auth->getRole('author');
+        $auth->assign($authRole, $user->getId());
+
+        return $user;
+
     }
 }

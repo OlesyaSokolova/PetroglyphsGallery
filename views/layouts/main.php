@@ -64,22 +64,28 @@ AppAsset::register($this);
         ],
     ]);
 
-    $menuItems = [];
+    $menuItems = [
+        //['label' => 'О проекте', 'url' => ['/gallery/about']],
+        //['label' => 'Обратная связь', 'url' => ['/gallery/contact']],
+    ];
+
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
-        $menuItems[] = ['label' => 'Зарегистрироваться', 'url' => ['/site/signup']];
+        $menuItems[] = ['label' => 'Регистрация', 'url' => ['/gallery/signup']];
+        $menuItems[] = ['label' => 'Вход', 'url' => ['/gallery/login']];
     } else {
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::beginForm(['/gallery/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                'Выход (' . Yii::$app->user->identity->email . ')',
+                //'Выход',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
             . '</li>';
     }
+
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ml-auto'],
+        'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,
     ]);
     NavBar::end();
