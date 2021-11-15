@@ -21,22 +21,22 @@ class User extends ActiveRecord implements IdentityInterface
         return 'users';
     }
 
-    private static $users = [
+    /*private static $users = [
         '100' => [
             'id' => '100',
-            'username' => 'admin',
+            'email' => 'o.sokolova1@g.nsu.ru',
             'password' => 'admin',
             'authKey' => 'test100key',
             'accessToken' => '100-token',
         ],
         '101' => [
             'id' => '101',
-            'username' => 'demo',
+            'email' => 'o.sokolova1@g.nsu.ru',
             'password' => 'demo',
             'authKey' => 'test101key',
             'accessToken' => '101-token',
         ],
-    ];
+    ];*/
 
 
     /**
@@ -44,7 +44,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        //return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
     /**
@@ -52,13 +53,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
+       /* foreach (self::$users as $user) {
             if ($user['accessToken'] === $token) {
                 return new static($user);
             }
         }
 
-        return null;
+        return null;*/
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -67,15 +69,16 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername($username)
+    public static function findByUsername($email)
     {
-        foreach (self::$users as $user) {
+      /*  foreach (self::$users as $user) {
             if (strcasecmp($user['username'], $username) === 0) {
                 return new static($user);
             }
         }
 
-        return null;
+        return null;*/
+        return static::findOne(['email' => $email]);
     }
 
     /**
@@ -112,4 +115,16 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->password === $password;
     }
+
+    //код для генерации ключа аутентификации и хранения его в таблице
+//    public function beforeSave($insert)
+//    {
+//        if (parent::beforeSave($insert)) {
+//            if ($this->isNewRecord) {
+//                $this->auth_key = \Yii::$app->security->generateRandomString();
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
 }

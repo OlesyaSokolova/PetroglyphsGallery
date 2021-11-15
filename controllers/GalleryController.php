@@ -14,6 +14,7 @@ class GalleryController extends Controller
         $query = Petroglyph::find()
             ->orderBy(['id' => SORT_ASC]);
         $pages = new Pagination(['totalCount' => $query->count()]);
+        //$pages = new Pagination(['totalCount' => 100]);
 
         $petroglyphs = $query->offset($pages->offset)
             ->limit($pages->limit)

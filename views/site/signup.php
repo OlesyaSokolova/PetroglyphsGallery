@@ -7,11 +7,11 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
-?>
+$this->title = 'Регистрация';
+/*$this->params['breadcrumbs'][] = $this->title;
+*/?><!--
 <div class="site-signup">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?/*= Html::encode($this->title) */?></h1>-->
 
     <p>Пожалуйста, заполните следующие поля для регистрации:</p>
 
@@ -20,21 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'layout' => 'horizontal',
         'fieldConfig' => [
             'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 col-form-label'],
+            'labelOptions' => ['class' => 'col-lg-4 col-form-label', 'style'=>'width:1000px'],
         ],
     ]); ?>
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-        <?= $form->field($model, 'password')->passwordInput() ?>
-
-        <?= $form->field($model, 'rememberMe')->checkbox([
-            'template' => "<div class=\"offset-lg-1 col-lg-3 custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-        ]) ?>
+        <?= $form->field($model, 'email')->textInput(['autofocus' => true])->label("E-mail (будет использоваться как логин):") ?>
+        <?= $form->field($model, 'password')->passwordInput()->label("Пароль:") ?>
+        <?= $form->field($model, 'password')->passwordInput()->label("Повторите пароль:") ?>
 
         <div class="form-group">
             <div class="offset-lg-1 col-lg-11">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
             </div>
         </div>
 
