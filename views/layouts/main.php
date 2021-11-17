@@ -66,7 +66,8 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Мои публикации', 'url' => ['/gallery/publications']];
     }
     if (isset($userRoles['admin'])) {
-        $menuItems[] = ['label' => 'Администрирование', 'url' => ['/gallery/publications']];
+        //TODO: закрыть доступ к этой ссылке остальным пользователям
+        $menuItems[] = ['label' => 'Администрирование', 'url' => ['/user/index']];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
