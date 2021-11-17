@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\models\OwnerRule;
 use Yii;
 use yii\console\Controller;
 
@@ -17,24 +18,35 @@ class RbacController extends Controller
         $createPost->description = 'Создать публикацию';
         $auth->add($createPost);
 
-// добавляем разрешение "updatePost"
+        // добавляем разрешение "updatePost"
         $updatePost = $auth->createPermission('updatePost');
         $updatePost->description = 'Редактировать публикацию';
         $auth->add($updatePost);
 
-        // добавляем разрешение "updatePost"
+        // добавляем разрешение "updateOwnPost"
+        //1. Создаем новое правило
+        $ruleCheckOwner = new OwnerRule();
+        $auth->add($ruleCheckOwner);
+        //2. Создаем разрешение
+        $updateOwnPost = $auth->createPermission('updateOwnPost');
+        $updateOwnPost->description = 'Редактировать собственную публикацию.';
+        $updateOwnPost->ruleName = $ruleCheckOwner->name;
+        $auth->add($updateOwnPost);
+
+        // добавляем разрешение "updateUserInfo"
         $updateUserInfo = $auth->createPermission('updateUserInfo');
         $updateUserInfo->description = 'Редактировать данные о пользователе';
         $auth->add($updateUserInfo);
 
-// добавляем роль "author" и даём роли разрешение "createPost"
+        //добавляем роль "author" и даём роли разрешение "createPost"
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
         $auth->addChild($author, $updatePost);
+        $auth->addChild($author, $updateOwnPost);
 
-// добавляем роль "admin" и даём роли разрешение "updatePost"
-// а также все разрешения роли "author"
+        //добавляем роль "admin" и даём роли разрешение "updatePost"
+        //а также все разрешения роли "author"
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $updateUserInfo);

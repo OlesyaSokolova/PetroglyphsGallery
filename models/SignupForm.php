@@ -12,6 +12,7 @@ class SignupForm extends Model
 
     public $email;
     public $password;
+    public $passwordValidate;
 
     /**
      * @inheritdoc
@@ -25,7 +26,8 @@ class SignupForm extends Model
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Пользователь с таким e-mail уже существует.'],
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 6, 'message' => 'Пароль должен содержать минимум 6 символов.'],
+            ['passwordRepeat', 'required'],
         ];
     }
 
@@ -53,5 +55,10 @@ class SignupForm extends Model
 
         return $user;
 
+    }
+
+    public function validate($attributeNames = null, $clearErrors = true)
+    {
+        return parent::validate($attributeNames, $clearErrors) && $this->password == $this->passwordValidate;
     }
 }

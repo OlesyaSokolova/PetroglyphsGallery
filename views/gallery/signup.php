@@ -6,21 +6,20 @@
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
 
-$this->title = 'Signup';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Регистрация';
 ?>
 <div class="gallery-signup">
     <h1><?= Html::encode($this->title) ?></h1>
-    <p>Please fill out the following fields to signup:</p>
+    <p>Пожалуйста, заполните поля:</p>
     <div class="row">
         <div class="col-lg-5">
 
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-<!--            --><?/*= $form->field($model, 'username')->textInput(['autofocus' => true]) */?>
-            <?= $form->field($model, 'email') ?>
-            <?= $form->field($model, 'password')->passwordInput() ?>
+            <?php $form = ActiveForm::begin(['id' => 'form-signup']) ?>
+            <?= $form->field($model, 'email')->label("Логин (e-mail):") ?>
+            <?= $form->field($model, 'password')->passwordInput()->label("Пароль:") ?>
+            <?= $form->field($model, 'passwordValidate')->passwordInput()->label("Повторите пароль:") ?>
             <div class="form-group">
-                <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
             </div>
             <?php ActiveForm::end(); ?>
 

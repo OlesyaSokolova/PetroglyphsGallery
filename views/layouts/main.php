@@ -56,37 +56,44 @@ AppAsset::register($this);
             //'class' => 'navbar-inverse navbar-dark bg-dark fixed-top'
         ],
     ]);
+
+    $menuItems = [];
+    $menuItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
+
+    $userRoles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId());
+
+    if (isset($userRoles['author']) || isset($userRoles['admin'])) {
+        $menuItems[] = ['label' => 'Мои публикации', 'url' => ['/gallery/publications']];
+    }
+    if (isset($userRoles['admin'])) {
+        $menuItems[] = ['label' => 'Администрирование', 'url' => ['/gallery/publications']];
+    }
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav nav'],
-        'items' => [
-            //['label' => 'Home', 'url' => ['/gallery/index']],
-            ['label' => 'О проекте', 'url' => ['/site/about']],
-        ],
+        'options' => ['class' => 'navbar-nav navbar-right'],
+        'items' => $menuItems
     ]);
 
-    $menuItems = [
-        //['label' => 'О проекте', 'url' => ['/gallery/about']],
-        //['label' => 'Обратная связь', 'url' => ['/gallery/contact']],
-    ];
+    $authenticationItems = [];
 
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Регистрация', 'url' => ['/gallery/signup']];
-        $menuItems[] = ['label' => 'Вход', 'url' => ['/gallery/login']];
+        $authenticationItems[] = ['label' => 'Регистрация', 'url' => ['/gallery/signup']];
+        $authenticationItems[] = ['label' => 'Вход', 'url' => ['/gallery/login']];
     } else {
-        $menuItems[] = '<li>'
+        //$authenticationItems[] = ['label' => 'Мои публикации', 'url' => ['/gallery/publications']];
+        $authenticationItems[] = '<li>'
             . Html::beginForm(['/gallery/logout'], 'post')
             . Html::submitButton(
                 'Выход (' . Yii::$app->user->identity->email . ')',
                 //'Выход',
-                ['class' => 'btn btn-link logout']
+                ['class' => 'btn btn-light logout']
             )
             . Html::endForm()
             . '</li>';
     }
 
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
+        'options' => ['class' => 'navbar-nav ml-auto'],
+        'items' => $authenticationItems,
     ]);
     NavBar::end();
     ?>

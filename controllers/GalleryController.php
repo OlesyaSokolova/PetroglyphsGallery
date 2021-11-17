@@ -7,10 +7,46 @@ use app\models\Petroglyph;
 use app\models\SignupForm;
 use Yii;
 use yii\data\Pagination;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class GalleryController extends Controller
 {
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['manage-users', 'manage-publications'],
+                'denyCallback' => function () {
+                    die('Доступ запрещен!');
+                },
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['manage-users'],
+                        'roles'   => ['admin'],
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['manage-publications'],
+                        'roles'   => ['admin', 'author'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    public function actionManageUsers()
+    {
+        echo 'Управление пользователями доступно только администратору.';
+    }
+
+    public function actionManageArticles()
+    {
+        echo 'Управление статьями доступно администратору и Автору материалов.';
+    }
     //const PAGE_LIMIT = 10;
     public function actionIndex()
     {
@@ -48,7 +84,6 @@ class GalleryController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 
@@ -68,4 +103,21 @@ class GalleryController extends Controller
            'model' => $model,
        ]);
    }
+
+    public function actionPublications()
+    {
+        $query = Petroglyph::find()
+            ->where(['author_id' => Yii::$app->user->getId()])
+            ->orderBy(['id' => SORT_ASC]);
+        $pages = new Pagination(['totalCount' => $query->count()]);
+        //$pages = new Pagination(['totalCount' => 100]);
+
+        $petroglyphs = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+        return $this->render('publications',[
+            'petroglyphs' => $petroglyphs,
+            'pages' => $pages,
+        ]);
+    }
 }
