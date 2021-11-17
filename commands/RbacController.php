@@ -38,11 +38,10 @@ class RbacController extends Controller
         $updateUserInfo->description = 'Редактировать данные о пользователе';
         $auth->add($updateUserInfo);
 
-        //добавляем роль "author" и даём роли разрешение "createPost"
+        //добавляем роль "author" и даём роли разрешение "createPost" и "updateOwnPost"
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
-        $auth->addChild($author, $updatePost);
         $auth->addChild($author, $updateOwnPost);
 
         //добавляем роль "admin" и даём роли разрешение "updatePost"
@@ -50,11 +49,12 @@ class RbacController extends Controller
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $updateUserInfo);
+        $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $author);
 
-// Назначение ролей пользователям. 1 и 2 это IDs возвращаемые IdentityInterface::getId()
+// Назначение ролей пользователям. 1 и 7 это IDs возвращаемые IdentityInterface::getId()
 // обычно реализуемый в модели User.
-        $auth->assign($author, 2);
+        $auth->assign($author, 7);
         $auth->assign($admin, 1);
     }
 }

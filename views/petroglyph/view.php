@@ -52,13 +52,17 @@ if(!empty($petroglyph)) {
 $this->registerJs($script, yii\web\View::POS_READY);-->
 
 <h1><?= $this->title ?></h1>
-
-<?php if (Yii::$app->user->can('updateOwnPost', ['petroglyph' => $petroglyph])):?>
-    <div class="pull-right">
-        <?php Html::a(Yii::t('app', 'Редактировать'), ['admin/edit-object-general', 'id' => $petroglyph->id], ['class' => 'btn btn-primary']) ?>
-    </div>
-
-<?php endif; ?>
+<p>
+    <?php if (
+(Yii::$app->user->can('updateOwnPost', ['petroglyph' => $petroglyph]))
+|| (Yii::$app->user->can('updatePost'))
+):?>
+    <?= Html::button('Редактировать',
+        ['class' => 'btn btn-outline-secondary',
+            'name' => 'edit-button',
+            'href' => '<?= Url::to([\'petroglyph/view\', \'id\' => $petroglyph->id])?>]) ?>' ]);
+endif; ?>
+</p>
 <div class="petroglyph-image">
     <?= Html::img(Petroglyph::SRC_IMAGE.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
 </div>
