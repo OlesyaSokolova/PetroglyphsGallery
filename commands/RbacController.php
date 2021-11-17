@@ -33,6 +33,9 @@ class RbacController extends Controller
         $updateOwnPost->ruleName = $ruleCheckOwner->name;
         $auth->add($updateOwnPost);
 
+        // "updateOwnPost" будет использоваться из "updatePost"
+        $auth->addChild($updateOwnPost, $updatePost);
+
         // добавляем разрешение "updateUserInfo"
         $updateUserInfo = $auth->createPermission('updateUserInfo');
         $updateUserInfo->description = 'Редактировать данные о пользователе';
@@ -41,7 +44,6 @@ class RbacController extends Controller
         //добавляем роль "author" и даём роли разрешение "createPost" и "updateOwnPost"
         $author = $auth->createRole('author');
         $auth->add($author);
-        $auth->addChild($author, $createPost);
         $auth->addChild($author, $updateOwnPost);
 
         //добавляем роль "admin" и даём роли разрешение "updatePost"

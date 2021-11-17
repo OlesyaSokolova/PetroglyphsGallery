@@ -12,32 +12,6 @@ use yii\web\Controller;
 
 class GalleryController extends Controller
 {
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['manage-users', 'manage-publications'],
-                'denyCallback' => function () {
-                    die('Доступ запрещен!');
-                },
-                'rules' => [
-                    [
-                        'allow'   => true,
-                        'actions' => ['manage-users'],
-                        'roles'   => ['admin'],
-                    ],
-                    [
-                        'allow'   => true,
-                        'actions' => ['manage-publications'],
-                        'roles'   => ['admin', 'author'],
-                    ],
-                ],
-            ],
-        ];
-    }
-
     public function actionManageUsers()
     {
         echo 'Управление пользователями доступно только администратору.';

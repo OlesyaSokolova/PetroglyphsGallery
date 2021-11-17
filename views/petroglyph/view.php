@@ -53,13 +53,16 @@ $this->registerJs($script, yii\web\View::POS_READY);-->
 
 <h1><?= $this->title ?></h1>
 <p>
-    <?php if (
-(Yii::$app->user->can('updateOwnPost', ['petroglyph' => $petroglyph]))
-|| (Yii::$app->user->can('updatePost'))
-):?>
+    <?php if (Yii::$app->user->can('updatePost',
+        ['petroglyph' => $petroglyph])):?>
     <?= Html::button('Редактировать',
         ['class' => 'btn btn-outline-secondary',
             'name' => 'edit-button',
+            'href' => '<?= Url::to([\'petroglyph/edit\', \'id\' => $petroglyph->id])?>]) ?>' ]);
+ ?>
+    <?= Html::button('Удалить',
+        ['class' => 'btn btn-outline-secondary',
+            'name' => 'delete-button',
             'href' => '<?= Url::to([\'petroglyph/view\', \'id\' => $petroglyph->id])?>]) ?>' ]);
 endif; ?>
 </p>
