@@ -3,35 +3,6 @@
 use app\models\Petroglyph;
 use yii\helpers\Html;
 
-/*$dataLabels = [];
-$labels = $object->labels;
-if (!empty($labels)) {
-    foreach ($labels as $label) {
-        $dataLabels[] = [
-            'id' => $label->id,
-            'position' => json_decode($label->position),
-            'description' => $label->description,
-        ];
-    }
-}*/
-/*
-$host = Yii::$app->urlManager->createAbsoluteUrl(['/']);
-$labelsJson = json_encode($dataLabels);
-$script = <<< JS
-object = {
-    id: $object->id,
-    sef: '$object->link',
-    option: $object->option,
-    setting: $object->setting,
-    labels: $labelsJson,
-};
-host = '$host';
-
-start();
-
-JS;*/
-
-
 if(!empty($petroglyph)) {
     $this->title = $petroglyph->name;
     //$this->params['breadcrumbs'][] = $this->title;
@@ -47,9 +18,6 @@ if(!empty($petroglyph)) {
     }
 </style>
 
-<!--View3dAsset::register($this);
-\dominus77\highlight\Plugin::register($this);
-$this->registerJs($script, yii\web\View::POS_READY);-->
 
 <h1><?= $this->title ?></h1>
 <p>
