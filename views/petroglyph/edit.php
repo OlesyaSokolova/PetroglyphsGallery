@@ -24,24 +24,40 @@ if(!empty($petroglyph)) {
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
 
-        <?= Html::a(Yii::t('app', 'Редактировать'),
-            ['/petroglyph/edit', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-outline-secondary',
-                'name' => 'edit-button',]) ?>
 
-        <?= Html::a(Yii::t('app', 'Удалить'),
-            ['/petroglyph/delete', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-outline-secondary',
-                'name' => 'delete-button',]) ?>
 
     <?php endif; ?>
 </p>
 <div class="petroglyph-image">
-    <?= Html::img(Petroglyph::SRC_IMAGE.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
-</div>
+    <?php //
 
+    //Html::img(Petroglyph::SRC_IMAGE.$petroglyph->image, ['class' => 'img-fluid mb-4'])
+    /*$image = new Imagick(Petroglyph::SRC_IMAGE."example.tiff");
+    $image->setImageFormat('jpg');
+    Html::img($image, ['class' => 'img-fluid mb-4']);*/
+
+    //$exec = 'convert /var/www/html/petroglyphs/storage/mptest5.tif /var/www/html/petroglyphs/storage/mptest5.jpg 2>&1';
+    //@exec($exec, $exec_output, $exec_retval);?>
+    <?= //Html::img("/var/www/html/petroglyphs/storage/example.jpg", ['class' => 'img-fluid mb-4']);
+    Html::img(Petroglyph::SRC_IMAGE . 'mptest5-0.jpg', ['class' => 'img-fluid mb-4']);
+    $image = new Imagick(Petroglyph::SRC_IMAGE."mptest5.tif");
+    echo "page number: ".$image->getNumberImages();
+
+
+
+//possible error
+//print_r($exec_output)
+
+// echo $image;
+//phpinfo();
+
+?>
+</div>
 <p>
-    <?= $petroglyph->description ?>
+<?php $exec = 'exiftool /var/www/html/petroglyphs/storage/mptest5.tif';
+@exec($exec, $exec_output, $exec_retval);
+//possible error
+print_r($exec_output)?>
 </p>
 
 <?php /*if ($categoryId): */?><!--
