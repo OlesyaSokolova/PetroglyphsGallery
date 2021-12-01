@@ -76,7 +76,7 @@ $this->title = 'Personal publications';
 -->                        <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
 
                         <div class="row">
-                            <?= Html::img(Petroglyph::SRC_IMAGE.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
+                            <?= Html::img(Petroglyph::PATH_STORAGE.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
                         </div>
                         <h3>
                             <?= $petroglyph->name ?>

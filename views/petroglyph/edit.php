@@ -39,8 +39,8 @@ if(!empty($petroglyph)) {
     //$exec = 'convert /var/www/html/petroglyphs/storage/mptest5.tif /var/www/html/petroglyphs/storage/mptest5.jpg 2>&1';
     //@exec($exec, $exec_output, $exec_retval);?>
     <?= //Html::img("/var/www/html/petroglyphs/storage/example.jpg", ['class' => 'img-fluid mb-4']);
-    Html::img(Petroglyph::SRC_IMAGE . 'mptest5-0.jpg', ['class' => 'img-fluid mb-4']);
-    $image = new Imagick(Petroglyph::SRC_IMAGE."mptest5.tif");
+    Html::img(Petroglyph::PATH_STORAGE . 'mptest5-0.jpg', ['class' => 'img-fluid mb-4']);
+    $image = new Imagick(Petroglyph::PATH_STORAGE."mptest5.tif");
     echo "page number: ".$image->getNumberImages();
 
 
