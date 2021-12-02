@@ -82,10 +82,10 @@ class Petroglyph extends ActiveRecord
         $setting = $this->getSettingsArray();
         $setting->$field = $value;
         $this->setting = json_encode($setting);
-    }
+    }*/
 
     public function getSettingsArray()
     {
         return json_decode($this->settings);
-    }*/
+    }
 }
