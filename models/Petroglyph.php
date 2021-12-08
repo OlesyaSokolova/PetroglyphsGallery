@@ -10,7 +10,32 @@ use yii\helpers\FileHelper;
 * @property string name
 * @property string description //description of petroglyph
 * @property string image //link to an original image
-* @property string settings //json as string with drawings (and later maybe textures will be added)
+* @property string settings //TEXT - json as string with drawings (and later maybe textures will be added)
+ * {
+"drawings": [
+   {
+    image: "dr1_1.png",
+    layerParams: {
+                   alpha: "0.5",
+                   test: "hello1!!"
+                }
+    },
+    {
+    image: "dr1_2.png",
+    layerParams: {
+                   alpha: "0.6",
+                   test: "hello2!!"
+                }
+    },
+    {
+    image: "dr1_1.png",
+    layerParams: {
+                   alpha: "0.8656377",
+                   test: "hello3!!"
+                }
+    }]
+}
+ *
 * @property string author_id //id of author from table "author"
 */
 

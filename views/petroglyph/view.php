@@ -20,35 +20,7 @@ if(!empty($petroglyph)) {
 <?php
 ?>
 
-<script type="text/javascript">
-    window.onload = function() {
-        petroglyphLayers = {
-            originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
-            settings: <?= $petroglyph->settings ?>,
-        }
-        var canvas = document.getElementById("petroglyphCanvas");
-        ctx = canvas.getContext("2d");
-        originalImage = new Image;
-        originalImage.src = petroglyphLayers.originalImageSrc;
-        var drawings = petroglyphLayers.settings.drawings;
-        var drawingsImages = []
-        for (let i = 0; i < drawings.length; i++) {
-            drawingImage = new Image;
-            drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i];
-            drawingsImages.push(drawingImage);
-        }
-        console.log(drawingsImages);
-        canvas.width = originalImage.width
-        canvas.height = originalImage.height
 
-        originalImage.onload = function () {
-            ctx.drawImage(this, 0, 0);
-            for (let i = 0; i < drawingsImages.length; i++) {
-                  ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
-            }
-        };
-    }
-</script>
 <h1><?= $this->title ?></h1>
 <p>
     <?php if (Yii::$app->user->can('updatePost',
@@ -75,8 +47,6 @@ if(!empty($petroglyph)) {
         <div class="canvas-petroglyph">
             <canvas id="petroglyphCanvas">
             </canvas>
-            <button id="rt" title="Overlays" class="btn menu-object" data-menu="reconstruction-tools" data-html="true" data-container=".container-supermenu-object" data-toggle="popover" data-placement="bottom"><i class="fas fa-atlas fa-2x" style="color:green; background-color: black"></i></button>
-            <div class="btn-toolbar container-menu-object" role="toolbar"><div class="btn-group btn-group-sm submenu" role="group"><button title="Wireframe" class="btn menu-object" data-menu="wire-frame"><i class="fas fa-globe"></i></button><button title="Background" style="background-color: black" class="btn menu-object cp-button" data-menu="background"><i class="fas fa-palette"></i></button><button title="Autorotation on" class="btn menu-object" data-menu="rotate"><i class="fas fa-sync-alt"></i></button><button title="Share" class="btn menu-object" data-menu="share"><i class="fas fa-share-alt"></i></button><button title="Ruler" class="btn menu-object ruler" data-menu="ruler"><i class="fas fa-ruler"></i></button><button id="lit-btn" title="Light" class="btn menu-object" data-menu="light"><i class="fas fa-lightbulb"></i></button><button id="tex-btn" title="Disable Texture" class="btn menu-object" data-menu="texture-disable"><i class="fas fa-image"></i></button><button title="Rotate Model" class="btn menu-object" data-menu="rotate90"><i class="fas fa-sync-alt"></i></button><button title="Grid on" class="btn menu-object" data-menu="grid"><i class="fas fa-th-large"></i></button><button title="Orthographer" class="btn menu-object orthographer" data-menu="toggle-orthographer"><i class="fas fa-camera"></i></button><button title="Switch Camera" class="btn menu-object cam-switch-btn" data-menu="switch-camera"><i class="fas fa-eye"></i></button></div><div class="btn-group btn-group-sm" role="group"><button title="Options" class="btn menu-object" data-menu="submenu"><i class="fas fa-cog"></i></button><button title="Fullscreen" class="btn menu-object" data-menu="full-screen"><i class="fas fa-expand"></i></button><button title="Reset camera" class="btn menu-object cam-reset-btn" data-menu="reset-camera"><i class="fas fa-redo"></i></button></div></div>
         </div>
     </div>
 </div>
@@ -87,7 +57,109 @@ if(!empty($petroglyph)) {
 <p>
     ключевые слова: //$petroglyph->getTags()...
 </p>
+<script type="text/javascript">
+    window.onload = function() {
+        petroglyphLayers = {
+            originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
+            settings: <?= $petroglyph->settings ?>,
+        }
+        var canvas = document.getElementById("petroglyphCanvas");
+        ctx = canvas.getContext("2d");
+        originalImage = new Image;
+        originalImage.src = petroglyphLayers.originalImageSrc;
+        var drawings = petroglyphLayers.settings.drawings;
+        var drawingsImages = []
+        for (let i = 0; i < drawings.length; i++) {
+            drawingImage = new Image;
+            drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i].image;
+            drawingsImages.push(drawingImage);
+        }
+        //console.log(drawingsImages);
+        canvas.width = originalImage.width
+        canvas.height = originalImage.height
 
+        originalImage.onload = function () {
+            ctx.drawImage(this, 0, 0);
+            for (let i = 0; i < drawingsImages.length; i++) {
+                ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
+            }
+        };
+
+        var ALL_NODES,
+            classNameContainer = 'container-petroglyph',
+            classNameCanvas = 'canvas-petroglyph';
+
+        ALL_NODES = $('.petroglyph');
+        ALL_NODES.children('.' + classNameContainer).children('.' + classNameCanvas).append(initLayersSettings());
+    }
+
+function initLayersSettings() {
+    var supermenu = $('<div class="btn-group btn-group-sm container-supermenu" role="toolbar"></div>');
+    var drawings = <?= $petroglyph->settings ?>.drawings
+    if (Array.isArray(drawings)) {
+        var inputAlpha = '<div id="rt_popover">';
+        for (var i = 0; i < drawings.length; i++) {
+            if (typeof drawings[i].layerParams.alpha != 'undefined') {
+                alphaValue = drawings[i].layerParams.alpha;
+            } else {
+                alphaValue = 1;
+            }
+            inputAlpha += (i + 1)
+                + ' : <input type=\'range\' id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'-1\' max=\'1\' value=\'' + alphaValue + '\'>'
+                + '<button value="' + i + '" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"'
+                + 'data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button>' + '<br>';
+        }
+        inputAlpha += '</div>';
+
+        rt_popover = $(inputAlpha);
+
+        var rt = $('<button id="rt" title="Overlays" class="btn menu-object" data-menu="reconstruction-tools" data-html="true" data-container=".container-supermenu"' +
+            'data-toggle="popover" data-placement="bottom"><i class="fas fa-atlas fa-2x" style="color:green"></i></button>');
+
+        supermenu.append(rt);
+        var classNameContainer = 'container-petroglyph'
+        $('.' + classNameContainer)
+            .on('click', '.menu-object', function () {
+                switch ($(this).attr('data-menu')) {
+                    case 'reconstruction-tools':
+                        //TODO: add option to close it!!
+                        //object.option.rt = !object.option.rt;
+                        //if (object.option.rt) {
+                        $(this).popover({
+                            content: function(){
+                                return '<div id="rt_popover" style="width: 200px">' + rt_popover.html() + '</div>';
+                            }
+                        });
+                        $(this).popover('show');
+                        /*if($('#mt').hasClass('active')) {
+                            object.option.mt = false;
+                            mt_popover.html($('#mt_popover').html());
+                            $('#mt').popover('destroy');
+                            buttonActive($('#mt'), false);
+                        }*/
+                        /*} else {
+                            rt_popover.html($('#rt_popover').html());
+                            $(this).popover('destroy');
+                        }*/
+                        //buttonActive($(this), object.option.rt);
+                        buttonActive($(this), true);
+                        break;
+
+                }
+            });
+        return supermenu;
+    }
+}
+
+
+function buttonActive(element, value) {
+    if (value) {
+        element.addClass('active');
+    } else {
+        element.removeClass('active');
+    }
+}
+</script>
 <?php /*if ($categoryId): */?><!--
     <div class="clearfix">
         <?php /*if ($objectPrev): */?>
