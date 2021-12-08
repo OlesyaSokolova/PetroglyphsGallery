@@ -111,15 +111,20 @@ function initLayersSettings() {
         }
         inputAlpha += '</div>';
 
-        rt_popover = $(inputAlpha);
-
-        var rt = $('<button id="rt" title="Overlays" class="btn menu-object" data-menu="reconstruction-tools" data-html="true" data-container=".container-supermenu"' +
-            'data-toggle="popover" data-placement="bottom"><i class="fas fa-atlas fa-2x" style="color:green"></i></button>');
-
-        supermenu.append(rt);
+        //rt_popover = $(inputAlpha);
+        var rt = $('<button id="rt" title="Overlays" class="btn btn-secondary" data-menu="reconstruction-tools" data-html="true" data-container=".container-supermenu"' +
+            'data-toggle="popover" data-placement="right">LAYERS</button>');
         var classNameContainer = 'container-petroglyph'
-        $('.' + classNameContainer)
-            .on('click', '.menu-object', function () {
+        $(document).ready(function(){
+            // Enable popovers everywhere
+            $('[data-toggle="popover"]').popover({
+                content: function() {
+                    return '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>';;
+                }
+            });
+        });
+        /*$('.' + classNameContainer)
+            .on('click', '.btn-secondary', function () {
                 switch ($(this).attr('data-menu')) {
                     case 'reconstruction-tools':
                         //TODO: add option to close it!!
@@ -127,26 +132,29 @@ function initLayersSettings() {
                         //if (object.option.rt) {
                         $(this).popover({
                             content: function(){
-                                return '<div id="rt_popover" style="width: 200px">' + rt_popover.html() + '</div>';
+                                var test = content
+                                return test;
+                                //return '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>';
                             }
                         });
                         $(this).popover('show');
-                        /*if($('#mt').hasClass('active')) {
-                            object.option.mt = false;
+                        /!*if($('#mt').hasClass('active')) {
+                            //object.option.mt = false;
                             mt_popover.html($('#mt_popover').html());
                             $('#mt').popover('destroy');
                             buttonActive($('#mt'), false);
-                        }*/
-                        /*} else {
+                        }*!/
+                        /!*} else {
                             rt_popover.html($('#rt_popover').html());
                             $(this).popover('destroy');
-                        }*/
+                        }*!/
                         //buttonActive($(this), object.option.rt);
                         buttonActive($(this), true);
                         break;
 
                 }
-            });
+            });*/
+        supermenu.append(rt);
         return supermenu;
     }
 }
