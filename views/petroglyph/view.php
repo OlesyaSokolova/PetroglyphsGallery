@@ -52,7 +52,6 @@ if(!empty($petroglyph)) {
     </div>
 
     <div id="layers">
-        hello
     </div>
     <p>
         <?= $petroglyph->description ?>
@@ -69,8 +68,44 @@ if(!empty($petroglyph)) {
     window.onload = function() {
         loadOriginalImageWithDrawings()
         initLayersSettings()
+        $('.layers')
+            .on('input change', '.alpha-value', function () {
+                $(this).attr('value', $(this).val());
+                console.log("hello" + parseFloat($(this).val()))
+                //drawings[parseInt($(this).attr('id'))].alpha = parseFloat($(this).val());
+                //t.redrawTexture();
+            })
     }
 
+$('.' + classNameContainer).on('click', '.menu-object', function () {
+    switch ($(this).attr('data-menu')) {
+        case 'layer_pallete':
+            var active_state = !$(this).hasClass('active');
+            $(".cp-button").removeClass('active');
+            if (active_state) {
+                $(this).addClass('active');
+                currentDrawingId = $(this).val();
+                $('#color').show();
+                if (typeof drawings[currentDrawingId].color != 'undefined' && drawings[currentDrawingId].color !== null)
+                    cp.setHex(drawings[currentDrawingId].color);
+            } else $('#color').hide();
+            break;
+    }
+}
+function paletteColor() {
+    return $('<div id="color" class="container-pallete" style="display: none">\n' +
+        '    <div id="color-picker" class="cp-default">\n' +
+        '        <div class="picker-wrapper">\n' +
+        '            <div id="picker" class="picker"></div>\n' +
+        '            <div id="picker-indicator" class="picker-indicator"></div>\n' +
+        '        </div>\n' +
+        '        <div class="slide-wrapper">\n' +
+        '            <div id="slide" class="slide"></div>\n' +
+        '            <div id="slide-indicator" class="slide-indicator"></div>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '</div>');
+}
 function loadOriginalImageWithDrawings() {
     petroglyphLayers = {
         originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
@@ -122,6 +157,9 @@ function initLayersSettings() {
     }
 }
 
+function redrawPetroglyph() {
+
+}
 
 </script>
 <!--<div id="rt_popover" style="width: 200px"><div id="rt_popover">1 : <input type='range' id='0' class='alpha-value' step='0.05' min='-1' max='1' value='0.5'><button value="0" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>2 : <input type='range' id='1' class='alpha-value' step='0.05' min='-1' max='1' value='0.6'><button value="1" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>3 : <input type='range' id='2' class='alpha-value' step='0.05' min='-1' max='1' value='0.8656377'><button value="2" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br></div></div>
