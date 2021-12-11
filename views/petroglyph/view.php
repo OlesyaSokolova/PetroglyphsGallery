@@ -74,7 +74,7 @@ if(!empty($petroglyph)) {
                 $(this).attr('value', $(this).val());
                 var newAlpha = parseFloat($(this).val());
                 var drawingImageId = parseInt($(this).attr('id'));
-                drawingsImages[drawingImageId].alpha = newAlpha;
+                drawingsImages[drawingImageId].layerParams.alpha = newAlpha;
                 //TODO: define the function
                 redrawDrawings(drawingsImages)
                 //var test2 = 5+5
@@ -120,8 +120,6 @@ function loadOriginalImageWithDrawings(drawingsImages) {
         originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
         settings: <?= $petroglyph->settings ?>,
     }
-
-
     originalImage = new Image;
     originalImage.src = petroglyphLayers.originalImageSrc;
     var drawings = petroglyphLayers.settings.drawings;
@@ -142,9 +140,19 @@ function loadOriginalImageWithDrawings(drawingsImages) {
         for (let i = 0; i < drawingsImages.length; i++) {
             //ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
             ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
-            //ctx.globalAlpha = 0.2;
+            ctx.globalAlpha = drawingsImages[i].layerParams.alpha;
         }
     };
+}
+
+function redrawDrawings(drawingsImages) {
+    var canvas = document.getElementById("petroglyphCanvas");
+    ctx = canvas.getContext("2d");
+    for (let i = 0; i < drawingsImages.length; i++) {
+        //ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
+        ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
+        ctx.globalAlpha = drawingsImages[i].layerParams.alpha;
+    }
 }
 function initLayersSettings() {
 /*
