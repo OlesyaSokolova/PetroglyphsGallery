@@ -51,85 +51,98 @@ if(!empty($petroglyph)) {
         </div>
     </div>
 
-    <div id="layers">
+    <div id="layers" class = "layers-class">
+    </div>
+
+    <div id="color-palette">
     </div>
     <p>
         <?= $petroglyph->description ?>
     </p>
 </div>
-
-<p>
-    <?= $petroglyph->description ?>
-</p>
 <p>
     ключевые слова: //$petroglyph->getTags()...
 </p>
 <script type="text/javascript">
     window.onload = function() {
-        loadOriginalImageWithDrawings()
+        var drawingsImages = []
+        loadOriginalImageWithDrawings(drawingsImages)
         initLayersSettings()
-        $('.layers')
+        classNameContainer = 'layers-class'
+        $('.' + classNameContainer)
+            .on('input change', '.alpha-value', function () {
+                $(this).attr('value', $(this).val());
+                var newAlpha = parseFloat($(this).val());
+                var drawingImageId = parseInt($(this).attr('id'));
+                drawingsImages[drawingImageId].alpha = newAlpha;
+                //TODO: define the function
+                redrawDrawings(drawingsImages)
+                //var test2 = 5+5
+                //var test = drawings[parseInt($(this).attr('id'))].alpha = parseFloat($(this).val());
+                //t.redrawTexture();
+            });
+        //add color listener on change
+
+        $('.' + classNameContainer)
+            .on('click', '.menu-object', function () {
+            var currentDataMenu = $(this).attr('data-menu')
+           switch (currentDataMenu) {
+                case 'layer_pallete':
+                   //get value from color input
+                    /*var test = 5+5
+                    /!*var active_state = !$(this).hasClass('active');
+                    $(".cp-button").removeClass('active');
+                    if (active_state) {
+                        $(this).addClass('active');
+                        currentDrawingId = $(this).val();
+                        $('#color').show();
+                        if (typeof drawings[currentDrawingId].color != 'undefined' && drawings[currentDrawingId].color !== null)
+                            cp.setHex(drawings[currentDrawingId].color);
+                    } else $('#color').hide();*!/
+                    break;*/
+            }
+        });
+       /* $('.layers')
             .on('input change', '.alpha-value', function () {
                 $(this).attr('value', $(this).val());
                 console.log("hello" + parseFloat($(this).val()))
                 //drawings[parseInt($(this).attr('id'))].alpha = parseFloat($(this).val());
                 //t.redrawTexture();
-            })
+            })*/
+
+
     }
 
-$('.' + classNameContainer).on('click', '.menu-object', function () {
-    switch ($(this).attr('data-menu')) {
-        case 'layer_pallete':
-            var active_state = !$(this).hasClass('active');
-            $(".cp-button").removeClass('active');
-            if (active_state) {
-                $(this).addClass('active');
-                currentDrawingId = $(this).val();
-                $('#color').show();
-                if (typeof drawings[currentDrawingId].color != 'undefined' && drawings[currentDrawingId].color !== null)
-                    cp.setHex(drawings[currentDrawingId].color);
-            } else $('#color').hide();
-            break;
-    }
-}
-function paletteColor() {
-    return $('<div id="color" class="container-pallete" style="display: none">\n' +
-        '    <div id="color-picker" class="cp-default">\n' +
-        '        <div class="picker-wrapper">\n' +
-        '            <div id="picker" class="picker"></div>\n' +
-        '            <div id="picker-indicator" class="picker-indicator"></div>\n' +
-        '        </div>\n' +
-        '        <div class="slide-wrapper">\n' +
-        '            <div id="slide" class="slide"></div>\n' +
-        '            <div id="slide-indicator" class="slide-indicator"></div>\n' +
-        '        </div>\n' +
-        '    </div>\n' +
-        '</div>');
-}
-function loadOriginalImageWithDrawings() {
+
+
+function loadOriginalImageWithDrawings(drawingsImages) {
     petroglyphLayers = {
         originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
         settings: <?= $petroglyph->settings ?>,
     }
-    var canvas = document.getElementById("petroglyphCanvas");
-    ctx = canvas.getContext("2d");
+
+
     originalImage = new Image;
     originalImage.src = petroglyphLayers.originalImageSrc;
     var drawings = petroglyphLayers.settings.drawings;
-    var drawingsImages = []
+
+    var canvas = document.getElementById("petroglyphCanvas");
+    ctx = canvas.getContext("2d");
+
     for (let i = 0; i < drawings.length; i++) {
         drawingImage = new Image;
         drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i].image;
         drawingsImages.push(drawingImage);
     }
-    //console.log(drawingsImages);
     canvas.width = originalImage.width
     canvas.height = originalImage.height
 
     originalImage.onload = function () {
         ctx.drawImage(this, 0, 0);
         for (let i = 0; i < drawingsImages.length; i++) {
+            //ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
             ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
+            //ctx.globalAlpha = 0.2;
         }
     };
 }
@@ -143,13 +156,18 @@ function initLayersSettings() {
         for (var i = 0; i < drawings.length; i++) {
             if (typeof drawings[i].layerParams.alpha != 'undefined') {
                 alphaValue = drawings[i].layerParams.alpha;
+                //colorValue = drawings[i].layerParams.color;
+                colorValue = "#868686"
             } else {
                 alphaValue = 1;
             }
-            inputAlpha += (i + 1)
+
+           inputAlpha += (i + 1)
                 + ' : <input type=\'range\' id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'-1\' max=\'1\' value=\'' + alphaValue + '\'>'
                 + '<button value="' + i + '" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"'
-                + 'data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button>' + '<br>';
+                + 'data-toggle="popover" data-placement="bottom">'
+                + '<label for="drawingColor">Color:</label>'
+                + '<input type="color" value=\'' + colorValue + '\' id="drawingColor"></button>' + '<br>';
         }
         inputAlpha += '</div>';
         var layersDiv = document.getElementById("layers");
