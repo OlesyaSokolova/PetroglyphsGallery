@@ -12,13 +12,17 @@ if(!empty($petroglyph)) {
         margin-top: 30px;
         margin-bottom: 30px;
     }
-    .petroglyph-image {
-        float:left; /* Выравнивание по левому краю */
-        margin: 7px 20px 7px 0; /* Отступы вокруг картинки */
+    /*.petroglyph {
+        float:left; !* Выравнивание по левому краю *!
+        margin: 7px 20px 7px 0; !* Отступы вокруг картинки *!
+    }*/
+
+    .box {
+        display: flex;
+        justify-content: space-between;
     }
+
 </style>
-<?php
-?>
 
 
 <h1><?= $this->title ?></h1>
@@ -35,20 +39,24 @@ if(!empty($petroglyph)) {
             ['/petroglyph/delete', 'id' => $petroglyph->id],
             ['class' => 'btn btn-outline-secondary',
                 'name' => 'delete-button',]) ?>
-
     <?php endif; ?>
 </p>
-<div class="petroglyph-image">
-    <?= Html::img(Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
-</div>
 
-<div class="pull-left petroglyph">
+
+<div class="box">
     <div class="container-petroglyph" data-state="static">
         <div class="canvas-petroglyph">
             <canvas id="petroglyphCanvas">
             </canvas>
         </div>
     </div>
+
+    <div id="layers">
+        hello
+    </div>
+    <p>
+        <?= $petroglyph->description ?>
+    </p>
 </div>
 
 <p>
@@ -59,42 +67,41 @@ if(!empty($petroglyph)) {
 </p>
 <script type="text/javascript">
     window.onload = function() {
-        petroglyphLayers = {
-            originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
-            settings: <?= $petroglyph->settings ?>,
-        }
-        var canvas = document.getElementById("petroglyphCanvas");
-        ctx = canvas.getContext("2d");
-        originalImage = new Image;
-        originalImage.src = petroglyphLayers.originalImageSrc;
-        var drawings = petroglyphLayers.settings.drawings;
-        var drawingsImages = []
-        for (let i = 0; i < drawings.length; i++) {
-            drawingImage = new Image;
-            drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i].image;
-            drawingsImages.push(drawingImage);
-        }
-        //console.log(drawingsImages);
-        canvas.width = originalImage.width
-        canvas.height = originalImage.height
-
-        originalImage.onload = function () {
-            ctx.drawImage(this, 0, 0);
-            for (let i = 0; i < drawingsImages.length; i++) {
-                ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
-            }
-        };
-
-        var ALL_NODES,
-            classNameContainer = 'container-petroglyph',
-            classNameCanvas = 'canvas-petroglyph';
-
-        ALL_NODES = $('.petroglyph');
-        ALL_NODES.children('.' + classNameContainer).children('.' + classNameCanvas).append(initLayersSettings());
+        loadOriginalImageWithDrawings()
+        initLayersSettings()
     }
 
+function loadOriginalImageWithDrawings() {
+    petroglyphLayers = {
+        originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
+        settings: <?= $petroglyph->settings ?>,
+    }
+    var canvas = document.getElementById("petroglyphCanvas");
+    ctx = canvas.getContext("2d");
+    originalImage = new Image;
+    originalImage.src = petroglyphLayers.originalImageSrc;
+    var drawings = petroglyphLayers.settings.drawings;
+    var drawingsImages = []
+    for (let i = 0; i < drawings.length; i++) {
+        drawingImage = new Image;
+        drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i].image;
+        drawingsImages.push(drawingImage);
+    }
+    //console.log(drawingsImages);
+    canvas.width = originalImage.width
+    canvas.height = originalImage.height
+
+    originalImage.onload = function () {
+        ctx.drawImage(this, 0, 0);
+        for (let i = 0; i < drawingsImages.length; i++) {
+            ctx.drawImage(drawingsImages[i], 0, 0, this.width, this.height);
+        }
+    };
+}
 function initLayersSettings() {
+/*
     var supermenu = $('<div class="btn-group btn-group-sm container-supermenu" role="toolbar"></div>');
+*/
     var drawings = <?= $petroglyph->settings ?>.drawings
     if (Array.isArray(drawings)) {
         var inputAlpha = '<div id="rt_popover">';
@@ -110,65 +117,15 @@ function initLayersSettings() {
                 + 'data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button>' + '<br>';
         }
         inputAlpha += '</div>';
-
-        //rt_popover = $(inputAlpha);
-        var rt = $('<button id="rt" title="Overlays" class="btn btn-secondary" data-menu="reconstruction-tools" data-html="true" data-container=".container-supermenu"' +
-            'data-toggle="popover" data-placement="right">LAYERS</button>');
-        var classNameContainer = 'container-petroglyph'
-        $(document).ready(function(){
-            // Enable popovers everywhere
-            $('[data-toggle="popover"]').popover({
-                content: function() {
-                    return '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>';;
-                }
-            });
-        });
-        /*$('.' + classNameContainer)
-            .on('click', '.btn-secondary', function () {
-                switch ($(this).attr('data-menu')) {
-                    case 'reconstruction-tools':
-                        //TODO: add option to close it!!
-                        //object.option.rt = !object.option.rt;
-                        //if (object.option.rt) {
-                        $(this).popover({
-                            content: function(){
-                                var test = content
-                                return test;
-                                //return '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>';
-                            }
-                        });
-                        $(this).popover('show');
-                        /!*if($('#mt').hasClass('active')) {
-                            //object.option.mt = false;
-                            mt_popover.html($('#mt_popover').html());
-                            $('#mt').popover('destroy');
-                            buttonActive($('#mt'), false);
-                        }*!/
-                        /!*} else {
-                            rt_popover.html($('#rt_popover').html());
-                            $(this).popover('destroy');
-                        }*!/
-                        //buttonActive($(this), object.option.rt);
-                        buttonActive($(this), true);
-                        break;
-
-                }
-            });*/
-        supermenu.append(rt);
-        return supermenu;
+        var layersDiv = document.getElementById("layers");
+        layersDiv.innerHTML = '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>'
     }
 }
 
 
-function buttonActive(element, value) {
-    if (value) {
-        element.addClass('active');
-    } else {
-        element.removeClass('active');
-    }
-}
 </script>
-<?php /*if ($categoryId): */?><!--
+<!--<div id="rt_popover" style="width: 200px"><div id="rt_popover">1 : <input type='range' id='0' class='alpha-value' step='0.05' min='-1' max='1' value='0.5'><button value="0" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>2 : <input type='range' id='1' class='alpha-value' step='0.05' min='-1' max='1' value='0.6'><button value="1" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>3 : <input type='range' id='2' class='alpha-value' step='0.05' min='-1' max='1' value='0.8656377'><button value="2" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br></div></div>
+--><?php /*if ($categoryId): */?><!--
     <div class="clearfix">
         <?php /*if ($objectPrev): */?>
             <?php /*= Html::a('<i class="fas fa-backward"></i> ' . $objectPrev->name, ['/object/view', 'categoryId' => $categoryId, 'id' => $objectPrev->link], ['class' => 'pull-left btn btn-default']) */?>
