@@ -51,7 +51,7 @@ if(!empty($petroglyph)) {
         </div>
     </div>
 
-    <div style="padding-left: 20px" id="layers" class = "layers-class">
+    <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
     <div id = "description">
@@ -65,6 +65,9 @@ if(!empty($petroglyph)) {
 <p>
     ключевые слова: //$petroglyph->getTags()...
 </p>
+<p>
+    ФИО автора: //$petroglyph->getAuthor()...
+</p>
 <script type="text/javascript">
     window.onload = function() {
         petroglyphLayers = {
@@ -72,22 +75,28 @@ if(!empty($petroglyph)) {
             settings: <?= $petroglyph->settings ?>,
         }
 
+        originalImage = new Image();
+        originalImage.src = petroglyphLayers.originalImageSrc;
+
         var drawingsImages = initDrawingsArray(jsonSettings = petroglyphLayers.settings)
-        var originalImageCtx = drawOriginalImage(originalImageSrc = petroglyphLayers.originalImageSrc)
+        var originalImageCtx = drawOriginalImage(originalImage)
         addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
         initLayersSettings(jsonSettings = petroglyphLayers.settings)
 
         classNameContainer = 'layers-class'
+
+        function updateAllLayers() {
+            var originalImageCtx = drawOriginalImage(originalImage)
+            addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
+        }
+
         $('.' + classNameContainer)
             .on('input change', '.alpha-value', function () {
                 $(this).attr('value', $(this).val());
-                var newAlpha = Math.abs(parseFloat($(this).val()));
+                var newAlpha = parseFloat($(this).val());
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].alpha = newAlpha;
-                //TODO: define the function
-                drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
-                //addImagesToContext(imagesArray = drawingsImages, contextToAddImages = originalImageCtx)
-                //redrawDrawings(drawingsImages)
+                updateAllLayers()
             });
         $('.' + classNameContainer)
             .on('input change', '.color-value', function () {
@@ -95,12 +104,8 @@ if(!empty($petroglyph)) {
                 var newColor = $(this).val();
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].color = newColor;
-                //TODO: define the function
                 drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
-                //addImagesToContext(imagesArray = drawingsImages, contextToAddImages = originalImageCtx)
-                //redrawDrawings(drawingsImages)
             });
-        //add color listener on change
 
         $('.' + classNameContainer)
             .on('click', '.menu-object', function () {
@@ -124,6 +129,7 @@ function drawImage(imageWithSettings, contextToDrawOn) {
         canvas.height = contextToDrawOn.canvas.height
 
         //3. set alpha channel for current image
+
         context.globalAlpha = imageWithSettings.alpha;
 
         //4. fill the context with color of current image
@@ -143,9 +149,8 @@ function initDrawingsArray(jsonSettings) {
     var drawingsImages = []
     for (let i = 0; i < drawingsJson.length; i++) {
         drawingImage = new Image();
-        //drawingImage.style.opacity = "0"
         drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawingsJson[i].image;
-        alpha = Math.abs(parseFloat(drawingsJson[i].layerParams.alpha))
+        alpha = parseFloat(drawingsJson[i].layerParams.alpha)
         color = drawingsJson[i].layerParams.color
 
         drawingsImages.push({"image": drawingImage, "alpha": alpha, "color": color});
@@ -153,9 +158,7 @@ function initDrawingsArray(jsonSettings) {
     return drawingsImages
 }
 
-function drawOriginalImage(originalImageSrc) {
-    originalImage = new Image();
-    originalImage.src = originalImageSrc;
+function drawOriginalImage(originalImage) {
 
     var canvas = document.getElementById('petroglyphCanvas')
     canvas.width = originalImage.width
@@ -179,7 +182,7 @@ function initLayersSettings(jsonSettings) {
 */
     var drawings = jsonSettings.drawings
     if (Array.isArray(drawings)) {
-        var inputAlpha = '<div id="rt_popover">';
+        var inputAlpha = '<div id="drawings" style="width: 200px">';
         for (var i = 0; i < drawings.length; i++) {
             if (typeof drawings[i].layerParams.alpha != 'undefined') {
                 alphaValue = drawings[i].layerParams.alpha;
@@ -187,17 +190,19 @@ function initLayersSettings(jsonSettings) {
             } else {
                 alphaValue = 1;
             }
+            inputAlpha += '<div style="border:1px solid black">';
 
-           inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
-                + ' : <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+            inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
+                + ' : <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                 + '<output>' + alphaValue + '</output>'
                 + '<br>'
                 + '<label for="drawingColor">Color:</label>'
                 + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
+            inputAlpha += '</div>';
         }
         inputAlpha += '</div>';
         var layersDiv = document.getElementById("layers");
-        layersDiv.innerHTML = '<div id="rt_popover" style="width: 200px">' + inputAlpha + '</div>'
+        layersDiv.innerHTML = inputAlpha
     }
 }
 
