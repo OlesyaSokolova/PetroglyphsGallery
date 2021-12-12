@@ -73,18 +73,30 @@ if(!empty($petroglyph)) {
         }
         var drawingsImages = initDrawingsArray(jsonSettings = petroglyphLayers.settings)
         var originalImageCtx = drawOriginalImage(originalImageSrc = petroglyphLayers.originalImageSrc)
-        addImagesToContext(imagesArray = drawingsImages, contextToAddImages = originalImageCtx)
-        //test(drawingsImages)
-        //loadOriginalImageWithDrawings(drawingsImages)
+        addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
         initLayersSettings(jsonSettings = petroglyphLayers.settings)
+
         classNameContainer = 'layers-class'
         $('.' + classNameContainer)
             .on('input change', '.alpha-value', function () {
                 $(this).attr('value', $(this).val());
-                var newAlpha = parseFloat($(this).val());
+                var newAlpha = Math.abs(parseFloat($(this).val()));
                 var drawingImageId = parseInt($(this).attr('id'));
-                drawingsImages[drawingImageId].layerParams.alpha = newAlpha;
+                drawingsImages[drawingImageId].alpha = newAlpha;
                 //TODO: define the function
+                drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
+                //addImagesToContext(imagesArray = drawingsImages, contextToAddImages = originalImageCtx)
+                //redrawDrawings(drawingsImages)
+            });
+        $('.' + classNameContainer)
+            .on('input change', '.color-value', function () {
+                $(this).attr('value', $(this).val());
+                var newColor = $(this).val();
+                var drawingImageId = parseInt($(this).attr('id'));
+                drawingsImages[drawingImageId].color = newColor;
+                //TODO: define the function
+                drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
+                //addImagesToContext(imagesArray = drawingsImages, contextToAddImages = originalImageCtx)
                 //redrawDrawings(drawingsImages)
             });
         //add color listener on change
@@ -99,14 +111,39 @@ if(!empty($petroglyph)) {
         });
     }
 
+function drawImage(imageWithSettings, contextToDrawOn) {
+    if (imageWithSettings.image.complete && imageWithSettings.image.naturalHeight !== 0) {
 
+        //1. create virtual canvas and context for current image
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+
+        //2. set size of contextToDrawOn for the canvas
+        canvas.width = contextToDrawOn.canvas.width
+        canvas.height = contextToDrawOn.canvas.height
+
+        //3. fill the context with color of current image
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(imageWithSettings.image, 0, 0, canvas.width, canvas.height)
+        context.fillStyle = imageWithSettings.color;
+        context.globalCompositeOperation = "source-in";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.globalCompositeOperation = "source-over";
+
+        //3. set alpha channel for current image
+        context.globalAlpha = imageWithSettings.alpha;
+
+        //4. render virtual canvases on contextToDrawOn
+        contextToDrawOn.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+    }
+}
 function initDrawingsArray(jsonSettings) {
     var drawingsJson = jsonSettings.drawings;
     var drawingsImages = []
     for (let i = 0; i < drawingsJson.length; i++) {
         drawingImage = new Image;
         drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawingsJson[i].image;
-        alpha = drawingsJson[i].layerParams.alpha
+        alpha = Math.abs(parseFloat(drawingsJson[i].layerParams.alpha))
         color = drawingsJson[i].layerParams.color
         drawingsImages.push({"image": drawingImage, "alpha": alpha, "color": color});
     }
@@ -127,245 +164,12 @@ function drawOriginalImage(originalImageSrc) {
     return originalImageCtx
 }
 
-function test(imagesArray) {
-    /* using canvas from DOM */
-    var domCanvas = document.getElementById('petroglyphCanvas');
-    var domContext = domCanvas.getContext('2d');
-    //domContext.fillRect(50,50,150,50);
-
-    /* virtual canvase 1 - not appended to the DOM */
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = imagesArray[0].color
-    ctx.drawImage(imagesArray[0].image, 0, 0, 200, 200)
-    //ctx.fillRect(50,50,150,150);
-
-    /* virtual canvase 2 - not appended to the DOM */
-    var canvas2 = document.createElement('canvas')
-    var ctx2 = canvas2.getContext('2d');
-    ctx2.fillStyle = imagesArray[1].color
-    ctx2.drawImage(imagesArray[1].image, 0, 0, 200, 200)
-
-    var canvas3 = document.createElement('canvas')
-    var ctx3 = canvas3.getContext('2d');
-    ctx3.fillStyle = imagesArray[2].color
-    ctx3.drawImage(imagesArray[2].image, 0, 0, 200, 200)
-    //ctx2.fillRect(50,50,100,50)
-
-    /* render virtual canvases on DOM canvas */
-    domContext.drawImage(canvas, 0, 0, 200, 200);
-    domContext.drawImage(canvas2, 0, 0, 200, 200);
-    domContext.drawImage(canvas3, 0, 0, 200, 200);
-}
-function addImagesToContext(imagesArray, contextToAddImages) {
+function addImagesToContext(imagesArray, contextToDrawOn) {
     for (let i = 0; i < imagesArray.length; i++) {
-        if (imagesArray[i].image.complete && imagesArray[i].image.naturalHeight !== 0 && typeof imagesArray[i].ctx === 'undefined') {
-
-            var domCanvas = document.getElementById('petroglyphCanvas');
-            var domContext = domCanvas.getContext('2d');
-            //domContext.fillRect(50,50,150,50);
-
-            /* virtual canvase 1 - not appended to the DOM */
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            canvas.width = domCanvas.width
-            canvas.height = domCanvas.height
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(imagesArray[i].image, 0, 0, canvas.width, canvas.height)
-            ctx.fillStyle = imagesArray[i].color;
-            ctx.globalCompositeOperation = "source-in";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.globalCompositeOperation = "source-over";
-            //ctx.fillStyle = imagesArray[i].color
-            ctx.globalAlpha = imagesArray[i].alpha;
-
-            //ctx.fillRect(50,50,150,150);
-
-            /* render virtual canvases on DOM canvas */
-            domContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-           /* var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            ctx.canvas.width = contextToAddImages.canvas.width;
-            ctx.canvas.height = contextToAddImages.canvas.height;
-            ctx.fillStyle = imagesArray[i].color;
-            ctx.drawImage(imagesArray[i].image, 0, 0);
-
-            contextToAddImages.globalAlpha = imagesArray[i].alpha;
-            //6. render virtual canvases on contextToAddImages
-            contextToAddImages.drawImage(canvas, 0, 0, contextToAddImages.canvas.width, contextToAddImages.canvas.height);
-            //contextToAddImages.drawImage(imagesArray[i].image, 0, 0, contextToAddImages.canvas.width, contextToAddImages.canvas.height);*/
-
-            //1. create virtual canvas for each image
-            /*var canvas = document.createElement('canvas');
-            imagesArray[i].ctx = canvas.getContext('2d');
-
-            //2. set size of contextToAddImages (size of original image)
-            imagesArray[i].ctx.canvas.width = contextToAddImages.canvas.width;
-            imagesArray[i].ctx.canvas.height = contextToAddImages.canvas.height;
-
-            //3. draw image for each virtual canvas
-            imagesArray[i].ctx.drawImage( imagesArray[i].image, 0, 0);
-
-            //4. fill each image with its color
-            imagesArray[i].ctx.clearRect(0, 0, imagesArray[i].ctx.canvas.width, imagesArray[i].ctx.canvas.height);
-            imagesArray[i].ctx.fillStyle = imagesArray[i].color;
-            imagesArray[i].ctx.globalCompositeOperation = "source-in";
-            imagesArray[i].ctx.fillRect(0, 0, imagesArray[i].ctx.canvas.width, imagesArray[i].ctx.canvas.height);
-            imagesArray[i].ctx.globalCompositeOperation = "source-over";
-            imagesArray[i].currentColor = imagesArray[i].color;
-
-            //5. set alpha channel for each image
-            contextToAddImages.globalAlpha = imagesArray[i].alpha;
-
-            //6. render virtual canvases on contextToAddImages
-            contextToAddImages.drawImage(imagesArray[i].ctx.canvas, 0, 0);*/
-    }
-           /* var canvas = document.createElement('canvas');
-            imagesArray[i].ctx = canvas.getContext('2d');
-            imagesArray[i].ctx.canvas.width = contextToAddImages.canvas.width;
-            imagesArray[i].ctx.canvas.height = contextToAddImages.canvas.height;
-            imagesArray[i].ctx.drawImage(imagesArray[i].image, 0, 0);
-
-            var coloredCanvas = document.createElement('canvas');
-            imagesArray[i].coloredCtx = coloredCanvas.getContext('2d');
-            let coloredCtx = imagesArray[i].coloredCtx;
-            coloredCtx.canvas.width = canvasWidth;
-            coloredCtx.canvas.height = canvasHeight;
-            coloredCtx.clearRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.drawImage(imagesArray[i].ctx.canvas, 0, 0);
-            if (typeof imagesArray[i].color === 'string') {
-                coloredCtx.fillStyle = imagesArray[i].color;
-                coloredCtx.globalCompositeOperation = "source-in";
-                coloredCtx.fillRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-                coloredCtx.globalCompositeOperation = "source-over";
-                imagesArray[i].currentColor = imagesArray[i].color;
-            }
-        }
-    }
-    //2d. For each drawing: if color changed - redraw drawings[i].coloredCtx
-    for (let i = 0; i < imagesArray.length; i++) {
-        if (imagesArray[i].ctx && typeof imagesArray[i].color === 'string' &&
-            (typeof imagesArray[i].currentColor == "undefined" || imagesArray[i].currentColor != imagesArray[i].color))
-        {
-            let coloredCtx = imagesArray[i].coloredCtx;
-            coloredCtx.clearRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.drawImage(imagesArray[i].ctx.canvas, 0, 0);
-            coloredCtx.fillStyle = imagesArray[i].color;
-            coloredCtx.globalCompositeOperation = "source-in";
-            coloredCtx.fillRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.globalCompositeOperation = "source-over";
-            imagesArray[i].currentColor = imagesArray[i].color;
-        }
-
-        for (let i = 0; i < imagesArray.length; i++) {
-            if (imagesArray[i].alpha > 0) {
-                if (typeof drawingsImages[i].coloredCtx != 'undefined' ) {
-                    originalImageCtx.globalAlpha = imagesArray[i].alpha;
-                    originalImageCtx.drawImage(imagesArray[i].coloredCtx.canvas, 0, 0);
-                }
-            }
-        }*/
+        drawImage(imagesArray[i], contextToDrawOn)
     }
 }
-function loadOriginalImageWithDrawings(drawingsImages) {
 
-    originalImage = new Image;
-    originalImage.src = petroglyphLayers.originalImageSrc;
-    var drawings = petroglyphLayers.settings.drawings;
-
-    /*var canvas = document.getElementById("petroglyphCanvas");
-    ctx = canvas.getContext("2d");*/
-    originalImageCtx = document.getElementById('petroglyphCanvas').getContext('2d');
-    /*canvas.width = originalImage.width
-    canvas.height = originalImage.height*/
-
-    for (let i = 0; i < drawings.length; i++) {
-        drawingImage = new Image;
-        drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawings[i].image;
-        alpha = drawings[i].layerParams.alpha
-        color = drawings[i].layerParams.color
-        drawingsImages.push({"image": drawingImage, "alpha": alpha, "color": color});
-    }
-
-    originalImage.onload = function () {
-        originalImageCtx.canvas.width = originalImage.width
-        originalImageCtx.canvas.height = originalImage.height
-        originalImageCtx.drawImage(this, 0, 0);
-        //redrawDrawings(drawingsImages, originalImageCtx, originalImage.width, originalImage.height)
-        /*for (let i = 0; i < drawingsImages.length; i++) {
-            ctx.drawImage(drawingsImages[i].image, 0, 0, this.width, this.height);
-            ctx.globalAlpha = drawingsImages[i].alpha;
-            /!*if (typeof drawingsImages[i].color === 'string') {
-                ctx.fillStyle = drawings[i].color;
-                ctx.globalCompositeOperation = "source-in";
-                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.globalCompositeOperation = "source-over";
-            }*!/
-        }*/
-    };
-}
-
-function redrawDrawings(drawingsImages, originalImageCtx, canvasWidth, canvasHeight) {
-    //2c. For each drawing: if loaded - create drawings[i].ctx canvas with drawing image
-    // and drawings[i].coloredCtx with colored drawing image
-    for (let i = 0; i < drawingsImages.length; i++) {
-        if (drawingsImages[i].image.complete && drawingsImages[i].image.naturalHeight !== 0 && typeof drawingsImages[i].ctx === 'undefined')
-        {
-            var canvas = document.createElement('canvas');
-            drawingsImages[i].ctx = canvas.getContext('2d');
-            drawingsImages[i].ctx.canvas.width = canvasWidth;
-            drawingsImages[i].ctx.canvas.height = canvasHeight;
-            drawingsImages[i].ctx.drawImage(drawingsImages[i].image, 0, 0);
-
-            var coloredCanvas = document.createElement('canvas');
-            drawingsImages[i].coloredCtx = coloredCanvas.getContext('2d');
-            let coloredCtx = drawingsImages[i].coloredCtx;
-            coloredCtx.canvas.width = canvasWidth;
-            coloredCtx.canvas.height = canvasHeight;
-            coloredCtx.clearRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.drawImage(drawingsImages[i].ctx.canvas, 0, 0);
-            if (typeof drawingsImages[i].color === 'string') {
-                coloredCtx.fillStyle = drawingsImages[i].color;
-                coloredCtx.globalCompositeOperation = "source-in";
-                coloredCtx.fillRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-                coloredCtx.globalCompositeOperation = "source-over";
-                drawingsImages[i].currentColor = drawingsImages[i].color;
-            }
-        }
-    }
-    //2d. For each drawing: if color changed - redraw drawings[i].coloredCtx
-    for (let i = 0; i < drawingsImages.length; i++) {
-        if (drawingsImages[i].ctx && typeof drawingsImages[i].color === 'string' &&
-            (typeof drawingsImages[i].currentColor == "undefined" || drawingsImages[i].currentColor != drawingsImages[i].color))
-        {
-            let coloredCtx = drawingsImages[i].coloredCtx;
-            coloredCtx.clearRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.drawImage(drawingsImages[i].ctx.canvas, 0, 0);
-            coloredCtx.fillStyle = drawingsImages[i].color;
-            coloredCtx.globalCompositeOperation = "source-in";
-            coloredCtx.fillRect(0, 0, coloredCtx.canvas.width, coloredCtx.canvas.height);
-            coloredCtx.globalCompositeOperation = "source-over";
-            drawingsImages[i].currentColor = drawingsImages[i].color;
-        }
-
-        for (let i = 0; i < drawingsImages.length; i++) {
-            if (drawingsImages[i].alpha > 0) {
-                if (typeof drawingsImages[i].coloredCtx != 'undefined' ) {
-                    originalImageCtx.globalAlpha = drawingsImages[i].alpha;
-                    originalImageCtx.drawImage(drawingsImages[i].coloredCtx.canvas, 0, 0);
-                }
-            }
-        }
-
-    }
-    /*var canvas = document.getElementById("petroglyphCanvas");
-    ctx = canvas.getContext("2d");
-    for (let i = 0; i < drawingsImages.length; i++) {
-        ctx.drawImage(drawingsImages[i].image, 0, 0, this.width, this.height);
-        ctx.globalAlpha = drawingsImages[i].alpha;
-        ctx.fillStyle = drawingsImages[i].color;
-    }*/
-}
 function initLayersSettings(jsonSettings) {
 /*
     var supermenu = $('<div class="btn-group btn-group-sm container-supermenu" role="toolbar"></div>');
@@ -381,12 +185,12 @@ function initLayersSettings(jsonSettings) {
                 alphaValue = 1;
             }
 
-           inputAlpha += (i + 1)
+           inputAlpha += (i + 1)//TODO: LAYER TITLE!!!!
                 + ' : <input type=\'range\' id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'-1\' max=\'1\' value=\'' + alphaValue + '\'>'
                 + '<button value="' + i + '" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"'
                 + 'data-toggle="popover" data-placement="bottom">'
                 + '<label for="drawingColor">Color:</label>'
-                + '<input type="color" value=\'' + colorValue + '\' id="drawingColor"></button>' + '<br>';
+                + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' id="drawingColor"></button>' + '<br>';
         }
         inputAlpha += '</div>';
         var layersDiv = document.getElementById("layers");
