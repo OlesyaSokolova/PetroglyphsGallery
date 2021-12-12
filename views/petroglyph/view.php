@@ -51,7 +51,7 @@ if(!empty($petroglyph)) {
         </div>
     </div>
 
-    <div id="layers" class = "layers-class">
+    <div style="padding-left: 20px" id="layers" class = "layers-class">
     </div>
 
     <div id = "description">
@@ -71,6 +71,7 @@ if(!empty($petroglyph)) {
             originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
             settings: <?= $petroglyph->settings ?>,
         }
+
         var drawingsImages = initDrawingsArray(jsonSettings = petroglyphLayers.settings)
         var originalImageCtx = drawOriginalImage(originalImageSrc = petroglyphLayers.originalImageSrc)
         addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
@@ -122,7 +123,10 @@ function drawImage(imageWithSettings, contextToDrawOn) {
         canvas.width = contextToDrawOn.canvas.width
         canvas.height = contextToDrawOn.canvas.height
 
-        //3. fill the context with color of current image
+        //3. set alpha channel for current image
+        context.globalAlpha = imageWithSettings.alpha;
+
+        //4. fill the context with color of current image
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(imageWithSettings.image, 0, 0, canvas.width, canvas.height)
         context.fillStyle = imageWithSettings.color;
@@ -130,10 +134,7 @@ function drawImage(imageWithSettings, contextToDrawOn) {
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.globalCompositeOperation = "source-over";
 
-        //3. set alpha channel for current image
-        context.globalAlpha = imageWithSettings.alpha;
-
-        //4. render virtual canvases on contextToDrawOn
+        //5. render virtual canvases on contextToDrawOn
         contextToDrawOn.drawImage(canvas, 0, 0, canvas.width, canvas.height);
     }
 }
@@ -141,17 +142,19 @@ function initDrawingsArray(jsonSettings) {
     var drawingsJson = jsonSettings.drawings;
     var drawingsImages = []
     for (let i = 0; i < drawingsJson.length; i++) {
-        drawingImage = new Image;
+        drawingImage = new Image();
+        //drawingImage.style.opacity = "0"
         drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawingsJson[i].image;
         alpha = Math.abs(parseFloat(drawingsJson[i].layerParams.alpha))
         color = drawingsJson[i].layerParams.color
+
         drawingsImages.push({"image": drawingImage, "alpha": alpha, "color": color});
     }
     return drawingsImages
 }
 
 function drawOriginalImage(originalImageSrc) {
-    originalImage = new Image;
+    originalImage = new Image();
     originalImage.src = originalImageSrc;
 
     var canvas = document.getElementById('petroglyphCanvas')
@@ -185,12 +188,12 @@ function initLayersSettings(jsonSettings) {
                 alphaValue = 1;
             }
 
-           inputAlpha += (i + 1)//TODO: LAYER TITLE!!!!
-                + ' : <input type=\'range\' id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'-1\' max=\'1\' value=\'' + alphaValue + '\'>'
-                + '<button value="' + i + '" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"'
-                + 'data-toggle="popover" data-placement="bottom">'
+           inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
+                + ' : <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.05\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                + '<output>' + alphaValue + '</output>'
+                + '<br>'
                 + '<label for="drawingColor">Color:</label>'
-                + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' id="drawingColor"></button>' + '<br>';
+                + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
         }
         inputAlpha += '</div>';
         var layersDiv = document.getElementById("layers");
