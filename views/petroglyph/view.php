@@ -33,7 +33,7 @@ if(!empty($petroglyph)) {
         ['petroglyph' => $petroglyph])):?>
 
         <?= Html::a(Yii::t('app', 'Редактировать'),
-            ['/petroglyph/view', 'id' => $petroglyph->id],
+            ['/petroglyph/edit', 'id' => $petroglyph->id],
             ['class' => 'btn btn-outline-secondary',
                 'name' => 'edit-button',]) ?>
 
@@ -160,6 +160,7 @@ function updateAllQueryParameters(jsonSettings) {
                 } else {
                     uri += (separator + specialKey + "=" + encodeURIComponent(layerParams[key]));
                 }
+                //TODO: EDIT TITLE
                 window.history.pushState("", "Page Title Here", uri);
             }
         }
@@ -245,8 +246,9 @@ function initLayersSettings(jsonSettings) {
             var currentId = "layer_" + i;
             inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
 
+
             inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
-                + ' : <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                + ': <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                 + '<output>' + alphaValue + '</output>'
                 + '<br>'
                 + '<label for="drawingColor">Color:</label>'
