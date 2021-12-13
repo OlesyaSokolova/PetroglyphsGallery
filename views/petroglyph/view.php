@@ -19,7 +19,9 @@ if(!empty($petroglyph)) {
 
     .box {
         display: flex;
+        /*
         justify-content: space-between;
+        */
     }
 
 </style>
@@ -31,7 +33,7 @@ if(!empty($petroglyph)) {
         ['petroglyph' => $petroglyph])):?>
 
         <?= Html::a(Yii::t('app', 'Редактировать'),
-            ['/petroglyph/edit', 'id' => $petroglyph->id],
+            ['/petroglyph/view', 'id' => $petroglyph->id],
             ['class' => 'btn btn-outline-secondary',
                 'name' => 'edit-button',]) ?>
 
@@ -55,13 +57,12 @@ if(!empty($petroglyph)) {
     </div>
 
     <div id = "description">
-        <p>
-            <?= $petroglyph->description ?>
-        </p>
     </div>
-
 </div>
 
+<p>
+    <?= $petroglyph->description ?>
+</p>
 <p>
     ключевые слова: //$petroglyph->getTags()...
 </p>
@@ -112,6 +113,13 @@ if(!empty($petroglyph)) {
 
         classNameContainer = 'layers-class'
 
+        if(settings.drawings.length !== 0 ) {
+            var descriptionDiv = document.getElementById('description');
+            descriptionDiv.innerText = settings.drawings[0].layerParams.description;
+            document.getElementById('layer_' + 0).style.background = "#d6d5d5";
+        }
+
+
         function updateAllLayers() {
             var originalImageCtx = drawOriginalImage(originalImage)
             addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
@@ -125,8 +133,7 @@ if(!empty($petroglyph)) {
                 drawingsImages[drawingImageId].alpha = newAlpha;
                 updateAllLayers()
                 updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
-            });
-        $('.' + classNameContainer)
+            })
             .on('input change', '.color-value', function () {
                 $(this).attr('value', $(this).val());
                 var newColor = $(this).val();
@@ -134,19 +141,8 @@ if(!empty($petroglyph)) {
                 drawingsImages[drawingImageId].color = newColor;
                 updateAllLayers()
                 updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
-               // drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
             });
-
-        $('.' + classNameContainer)
-            .on('click', '.menu-object', function () {
-            var currentDataMenu = $(this).attr('data-menu')
-           switch (currentDataMenu) {
-                case 'layer_pallete':
-                    break;
-            }
-        });
     }
-//TODO: pass associative array to the function
 
 function updateAllQueryParameters(jsonSettings) {
     const keysToUpdateValue = ["alpha", "color"];
@@ -236,20 +232,18 @@ function addImagesToContext(imagesArray, contextToDrawOn) {
 }
 
 function initLayersSettings(jsonSettings) {
-/*
-    var supermenu = $('<div class="btn-group btn-group-sm container-supermenu" role="toolbar"></div>');
-*/
     var drawings = jsonSettings.drawings
     if (Array.isArray(drawings)) {
         var inputAlpha = '<div id="drawings" style="width: 200px">';
-        for (var i = 0; i < drawings.length; i++) {
+        for (let i = 0; i < drawings.length; i++) {
             if (typeof drawings[i].layerParams.alpha != 'undefined') {
                 alphaValue = drawings[i].layerParams.alpha;
                 colorValue = drawings[i].layerParams.color;
             } else {
                 alphaValue = 1;
             }
-            inputAlpha += '<div style="border:1px solid black">';
+            var currentId = "layer_" + i;
+            inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
 
             inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
                 + ' : <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
@@ -262,6 +256,26 @@ function initLayersSettings(jsonSettings) {
         inputAlpha += '</div>';
         var layersDiv = document.getElementById("layers");
         layersDiv.innerHTML = inputAlpha
+
+        //change layers description
+        var descriptionDiv = document.getElementById('description');
+        for (let i = 0; i < drawings.length; i++) {
+            document.getElementById('layer_' + i)
+                .addEventListener('click', function (event) {
+                    descriptionDiv.innerText = drawings[i].layerParams.description
+                 this.style.background = "#d6d5d5";
+
+                    function clearOtherLayersDivs(i) {
+                        for (let j = 0; j < drawings.length; j++) {
+                            if(i !== j) {
+                                document.getElementById('layer_' + j).style.background = "#ffffff";
+                            }
+                        }
+                    }
+
+                    clearOtherLayersDivs(i)
+                });
+        }
     }
 }
 
