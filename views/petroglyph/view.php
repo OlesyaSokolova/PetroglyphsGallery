@@ -69,10 +69,35 @@ if(!empty($petroglyph)) {
     ФИО автора: //$petroglyph->getAuthor()...
 </p>
 <script type="text/javascript">
+
+
+    function getSettingsFromUrl() {
+
+        /*var test = getUrlParameter("drawings[0]")
+        return null*/
+        //let searchParams = new URLSearchParams(window.location.href)
+        /*sPageURL = window.location.href
+        //sURLVariables = sPageURL.split('')
+        let searchParams = new URLSearchParams(window.location.search)
+        //var test = searchParams.has('id')
+        //var recursiveEncoded = $.param( myObject );
+        var recursiveDecoded = decodeURIComponent( searchParams );
+        //url = (window.location.href)
+        //result = jQuery.parseJSON(url)
+        return null*/
+    }
+
+
     window.onload = function() {
 
         originalImageSrc = <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>;
         settings = <?= $petroglyph->settings ?>;
+       /* settings = getSettingsFromUrl();
+        if(settings == null) {
+            settings = <?= $petroglyph->settings ?>;
+            putAllSettingsToUrl(settings)
+        }*/
+
 
         originalImage = new Image();
         originalImage.src = originalImageSrc;
@@ -96,8 +121,8 @@ if(!empty($petroglyph)) {
                 var newAlpha = parseFloat($(this).val());
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].alpha = newAlpha;
-                //updateQueryStringParameters("alpha", newAlpha);
                 updateAllLayers()
+                updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
             });
         $('.' + classNameContainer)
             .on('input change', '.color-value', function () {
@@ -105,9 +130,9 @@ if(!empty($petroglyph)) {
                 var newColor = $(this).val();
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].color = newColor;
-               // updateQueryStringParameters("color", newColor);
-                //putValuesToQuery
-                drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
+                updateAllLayers()
+                updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
+               // drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
             });
 
         $('.' + classNameContainer)
@@ -120,29 +145,49 @@ if(!empty($petroglyph)) {
         });
     }
 //TODO: pass associative array to the function
-   /* function putValuesToQuery(associativeArray){
-        $queries = array(
-            "settings" => associativeArray
-        );
-        $queryString = http_build_query($queries);
-        //header(window.location.href.$queryString);
-        window.history.pushState(window.location.href.$queryString);
-    }*/
 
-    function updateQueryStringParameter(key, value) {
+function updateAllQueryParameters(jsonSettings) {
+    const keysToUpdateValue = ["alpha", "color"];
+    var drawings = jsonSettings.drawings;
+    for (let i = 0; i < drawings.length; i++) {
+        var layerParams = drawings[i].layerParams
+        for (var key in layerParams) {
+            if(keysToUpdateValue.includes(key)) {
+                var specialKey = "drawings_" + i + "_layerParams_" + key;
+                uri = window.location.href
+                var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
+                var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+                if (uri.match(re)) {
+                    uri = uri.replace(re, '$1' + specialKey + "=" + layerParams[key] + '$2');
+                } else {
+                    uri += (separator + specialKey + "=" + layerParams[key]);
+                }
+                window.history.pushState("", "Page Title Here", uri);
+            }
+        }
+    }
+}
+
+function updateQueryStringParameter(jsonSettings, layerId, key, value) {
+
+    //var drawingsJson = jsonSettings.drawings;
+
+    jsonSettings.drawings[layerId].layerParams[key] = value.toString()
+    updateAllQueryParameters(jsonSettings)
+
+    /*var specialKey = "drawings_" + layerId + "_layerParams_" + key;
         uri = window.location.href
-        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
         var separator = uri.indexOf('?') !== -1 ? "&" : "?";
         if (uri.match(re)) {
-            uri = uri.replace(re, '$1' + key + "=" + value + '$2');
+            uri = uri.replace(re, '$1' + specialKey + "=" + value + '$2');
         }
         else {
-            uri += (separator + key + "=" + value);
+            uri += (separator + specialKey + "=" + value);
         }
-        window.history.pushState("", "Page Title Here", uri);
-    }
-    //You can reload the url like so
-    //var newUrl = updateQueryStringParameter(window.location.href,"some_param","replaceValue");
+        window.history.pushState("", "Page Title Here", uri);*/
+}
+
 function drawImage(imageWithSettings, contextToDrawOn) {
     if (imageWithSettings.image.complete && imageWithSettings.image.naturalHeight !== 0) {
 
