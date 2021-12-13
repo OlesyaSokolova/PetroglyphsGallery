@@ -70,18 +70,18 @@ if(!empty($petroglyph)) {
 </p>
 <script type="text/javascript">
     window.onload = function() {
-        petroglyphLayers = {
-            originalImageSrc: <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>,
-            settings: <?= $petroglyph->settings ?>,
-        }
+
+        originalImageSrc = <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>;
+        settings = <?= $petroglyph->settings ?>;
 
         originalImage = new Image();
-        originalImage.src = petroglyphLayers.originalImageSrc;
+        originalImage.src = originalImageSrc;
 
-        var drawingsImages = initDrawingsArray(jsonSettings = petroglyphLayers.settings)
+        var drawingsImages = initDrawingsArray(jsonSettings = settings)
         var originalImageCtx = drawOriginalImage(originalImage)
         addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
-        initLayersSettings(jsonSettings = petroglyphLayers.settings)
+        initLayersSettings(jsonSettings = settings)
+        //addSettingsToUrl()
 
         classNameContainer = 'layers-class'
 
@@ -96,6 +96,7 @@ if(!empty($petroglyph)) {
                 var newAlpha = parseFloat($(this).val());
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].alpha = newAlpha;
+                //updateQueryStringParameters("alpha", newAlpha);
                 updateAllLayers()
             });
         $('.' + classNameContainer)
@@ -104,6 +105,8 @@ if(!empty($petroglyph)) {
                 var newColor = $(this).val();
                 var drawingImageId = parseInt($(this).attr('id'));
                 drawingsImages[drawingImageId].color = newColor;
+               // updateQueryStringParameters("color", newColor);
+                //putValuesToQuery
                 drawImage(imageWithSettings = drawingsImages[drawingImageId], contextToDrawOn = originalImageCtx)
             });
 
@@ -116,7 +119,30 @@ if(!empty($petroglyph)) {
             }
         });
     }
+//TODO: pass associative array to the function
+   /* function putValuesToQuery(associativeArray){
+        $queries = array(
+            "settings" => associativeArray
+        );
+        $queryString = http_build_query($queries);
+        //header(window.location.href.$queryString);
+        window.history.pushState(window.location.href.$queryString);
+    }*/
 
+    function updateQueryStringParameter(key, value) {
+        uri = window.location.href
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            uri = uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+            uri += (separator + key + "=" + value);
+        }
+        window.history.pushState("", "Page Title Here", uri);
+    }
+    //You can reload the url like so
+    //var newUrl = updateQueryStringParameter(window.location.href,"some_param","replaceValue");
 function drawImage(imageWithSettings, contextToDrawOn) {
     if (imageWithSettings.image.complete && imageWithSettings.image.naturalHeight !== 0) {
 
