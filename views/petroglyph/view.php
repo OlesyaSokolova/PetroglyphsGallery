@@ -70,34 +70,36 @@ if(!empty($petroglyph)) {
 </p>
 <script type="text/javascript">
 
-
-    function getSettingsFromUrl() {
-
-        /*var test = getUrlParameter("drawings[0]")
-        return null*/
-        //let searchParams = new URLSearchParams(window.location.href)
-        /*sPageURL = window.location.href
-        //sURLVariables = sPageURL.split('')
-        let searchParams = new URLSearchParams(window.location.search)
-        //var test = searchParams.has('id')
-        //var recursiveEncoded = $.param( myObject );
-        var recursiveDecoded = decodeURIComponent( searchParams );
-        //url = (window.location.href)
-        //result = jQuery.parseJSON(url)
-        return null*/
+    function updateSettingsWithUrlParameters(settings) {
+        let params = (new URL(document.location.href)).searchParams;
+        const keysToUpdateValue = ["alpha", "color"];
+        for (let i = 0; i < settings.drawings.length; i++) {
+            for(let j = 0; j < keysToUpdateValue.length; j++) {
+                var specialKey = "drawings_" + i + "_layerParams_" + keysToUpdateValue[j];
+                var value = params.get(specialKey)
+                if(value != null) {
+                    settings.drawings[i].layerParams[keysToUpdateValue[j]] = decodeURIComponent(value)
+                }
+                else {
+                    //some value is not set - it is necessary to put it to url from db
+                    //return false
+                }
+            }
+        }
+        //var test = params.get("id")
+        //return true
     }
-
 
     window.onload = function() {
 
         originalImageSrc = <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>;
         settings = <?= $petroglyph->settings ?>;
-       /* settings = getSettingsFromUrl();
-        if(settings == null) {
-            settings = <?= $petroglyph->settings ?>;
-            putAllSettingsToUrl(settings)
-        }*/
 
+        //1. check if url params are not the same as params from db and update them if necessary
+        updateSettingsWithUrlParameters(settings);
+
+        //2. put settings (= some from url + some from db) to url
+        updateAllQueryParameters(settings)
 
         originalImage = new Image();
         originalImage.src = originalImageSrc;
@@ -158,9 +160,9 @@ function updateAllQueryParameters(jsonSettings) {
                 var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
                 var separator = uri.indexOf('?') !== -1 ? "&" : "?";
                 if (uri.match(re)) {
-                    uri = uri.replace(re, '$1' + specialKey + "=" + layerParams[key] + '$2');
+                    uri = uri.replace(re, '$1' + specialKey + "=" + encodeURIComponent(layerParams[key]) + '$2');
                 } else {
-                    uri += (separator + specialKey + "=" + layerParams[key]);
+                    uri += (separator + specialKey + "=" + encodeURIComponent(layerParams[key]));
                 }
                 window.history.pushState("", "Page Title Here", uri);
             }
@@ -170,22 +172,8 @@ function updateAllQueryParameters(jsonSettings) {
 
 function updateQueryStringParameter(jsonSettings, layerId, key, value) {
 
-    //var drawingsJson = jsonSettings.drawings;
-
     jsonSettings.drawings[layerId].layerParams[key] = value.toString()
     updateAllQueryParameters(jsonSettings)
-
-    /*var specialKey = "drawings_" + layerId + "_layerParams_" + key;
-        uri = window.location.href
-        var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
-        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-        if (uri.match(re)) {
-            uri = uri.replace(re, '$1' + specialKey + "=" + value + '$2');
-        }
-        else {
-            uri += (separator + specialKey + "=" + value);
-        }
-        window.history.pushState("", "Page Title Here", uri);*/
 }
 
 function drawImage(imageWithSettings, contextToDrawOn) {
