@@ -43,4 +43,11 @@ class PetroglyphController extends Controller
         $petroglyph = Petroglyph::findOne($id);
         $petroglyph->delete();
     }
+
+    public function actionSave($id)
+    {
+        //TODO - implement!!
+        $petroglyph = Petroglyph::findOne($id);
+        $petroglyph->delete();
+    }
 }

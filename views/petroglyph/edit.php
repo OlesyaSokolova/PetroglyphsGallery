@@ -4,7 +4,7 @@ use app\models\Petroglyph;
 use yii\helpers\Html;
 
 if(!empty($petroglyph)) {
-    $this->title = "Редактирование: ".$petroglyph->name;
+    $this->title = "Редактирование";
 } ?>
 <style>
     h1 {
@@ -18,8 +18,12 @@ if(!empty($petroglyph)) {
 
 </style>
 
+<h1> <?= $this->title ?>
+</h1>
 
-<h1><?= $this->title ?></h1>
+<label for="name">Название экспоната:</label>
+<input type="text" id="name" value=" <?= $petroglyph->name ?>"/>
+
 <p>
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
@@ -29,7 +33,7 @@ if(!empty($petroglyph)) {
 
 
 <div class="box">
-    <div style="padding-right: 20px; margin-right: 20px" width: 100px" class="box" id="instruments">
+    <div style="padding-right: 20px;" class="box" id="instruments">
         //сетка/список с инструментами
     </div>
 
@@ -48,9 +52,10 @@ if(!empty($petroglyph)) {
 
 </div>
 
-<p>
+<div id="mainDesc" contenteditable="true" style="border:1px solid black; margin-top: 20px">
     <?= $petroglyph->description ?>
-</p>
+</div>
+
 <p>
     ключевые слова: //$petroglyph->getTags()...
 </p>
@@ -58,8 +63,6 @@ if(!empty($petroglyph)) {
     ФИО автора: //$petroglyph->getAuthor()...
 </p>
 <script type="text/javascript">
-
-
 
     function updateSettingsWithUrlParameters(settings) {
         let params = (new URL(document.location.href)).searchParams;
@@ -72,13 +75,9 @@ if(!empty($petroglyph)) {
                     settings.drawings[i].layerParams[keysToUpdateValue[j]] = decodeURIComponent(value)
                 }
                 else {
-                    //some value is not set - it is necessary to put it to url from db
-                    //return false
                 }
             }
         }
-        //var test = params.get("id")
-        //return true
     }
 
     window.onload = function() {
@@ -106,108 +105,130 @@ if(!empty($petroglyph)) {
         saveButton.addEventListener('click', function (event) {
             for (let i = 0; i < settings.drawings.length; i++) {
                 settings.drawings[i].layerParams.title = document.getElementById("title_" +i).value;
-                settings.drawings[i].layerParams.alpha = ocument.getElementById('alpha_' + i).value;
+                settings.drawings[i].layerParams.alpha = document.getElementById('alpha_' + i).value;
                 settings.drawings[i].layerParams.color = document.getElementById('color_' + i).value;
                 settings.drawings[i].layerParams.description = document.getElementById('desc_' + i).value;
             }
-        });
+            mainDescription = document.getElementById('mainDesc').value
 
-        function updateAllLayers() {
-            var originalImageCtx = drawOriginalImage(originalImage)
-            addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
+    /* @property int id
+* @property string name
+* @property string description //description of petroglyph
+* @property string image //link to an original image
+* @property string settings */
+    var data = [];
+    data.push({ Company: "Microsoft", Location: "Redmond" , Total:123 });
+    data.push({ Company: "UrbanScience", Location:"Detroit", Total:456 });
+
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("ExportCalgary")',
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function(data) {
+            console.log("data :", data);
+            // Do something with the response
+        },
+        error: function() {
+            alert('Failed');
         }
+    });
+});
 
-        $('.' + classNameContainer)
-            .on('input change', '.alpha-value', function () {
-                $(this).attr('value', $(this).val());
-                var newAlpha = parseFloat($(this).val());
-                var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
-                drawingsImages[drawingImageId].alpha = newAlpha;
-                updateAllLayers()
-                updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
-            })
+function updateAllLayers() {
+    var originalImageCtx = drawOriginalImage(originalImage)
+    addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
+}
 
-            .on('input change', '.color-value', function () {
-                $(this).attr('value', $(this).val());
-                var newColor = $(this).val();
-                var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
-                drawingsImages[drawingImageId].color = newColor;
-                updateAllLayers()
-                updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
-            })
+$('.' + classNameContainer)
+    .on('input change', '.alpha-value', function () {
+        $(this).attr('value', $(this).val());
+        var newAlpha = parseFloat($(this).val());
+        var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
+        drawingsImages[drawingImageId].alpha = newAlpha;
+        updateAllLayers()
+        updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
+    })
 
-            .on('input change', '.title-value', function () {
-                $(this).attr('value', $(this).val());
-                var newTitle = $(this).val();
-                var titleId = parseInt(($(this).attr('id')).split('_')[1]);
-                var titleLabel = document.getElementById("descLabel_" + titleId)
-                titleLabel.innerText= newTitle + ':';
-        });
+    .on('input change', '.color-value', function () {
+        $(this).attr('value', $(this).val());
+        var newColor = $(this).val();
+        var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
+        drawingsImages[drawingImageId].color = newColor;
+        updateAllLayers()
+        updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
+    })
 
+    .on('input change', '.title-value', function () {
+        $(this).attr('value', $(this).val());
+        var newTitle = $(this).val();
+        var titleId = parseInt(($(this).attr('id')).split('_')[1]);
+        var titleLabel = document.getElementById("descLabel_" + titleId)
+        titleLabel.innerText= newTitle + ':';
+});
+}
 
-    }
-
-    function updateAllQueryParameters(jsonSettings) {
-        const keysToUpdateValue = ["alpha", "color"];
-        var drawings = jsonSettings.drawings;
-        for (let i = 0; i < drawings.length; i++) {
-            var layerParams = drawings[i].layerParams
-            for (var key in layerParams) {
-                if(keysToUpdateValue.includes(key)) {
-                    var specialKey = "drawings_" + i + "_layerParams_" + key;
-                    uri = window.location.href
-                    var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
-                    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-                    if (uri.match(re)) {
-                        uri = uri.replace(re, '$1' + specialKey + "=" + encodeURIComponent(layerParams[key]) + '$2');
-                    } else {
-                        uri += (separator + specialKey + "=" + encodeURIComponent(layerParams[key]));
-                    }
-                    window.history.pushState("", "Page Title Here", uri);
-                }
+function updateAllQueryParameters(jsonSettings) {
+const keysToUpdateValue = ["alpha", "color"];
+var drawings = jsonSettings.drawings;
+for (let i = 0; i < drawings.length; i++) {
+    var layerParams = drawings[i].layerParams
+    for (var key in layerParams) {
+        if(keysToUpdateValue.includes(key)) {
+            var specialKey = "drawings_" + i + "_layerParams_" + key;
+            uri = window.location.href
+            var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+            if (uri.match(re)) {
+                uri = uri.replace(re, '$1' + specialKey + "=" + encodeURIComponent(layerParams[key]) + '$2');
+            } else {
+                uri += (separator + specialKey + "=" + encodeURIComponent(layerParams[key]));
             }
+            window.history.pushState("", "Page Title Here", uri);
         }
     }
+}
+}
 
-    function updateQueryStringParameter(jsonSettings, layerId, key, value) {
+function updateQueryStringParameter(jsonSettings, layerId, key, value) {
 
-        jsonSettings.drawings[layerId].layerParams[key] = value.toString()
-        updateAllQueryParameters(jsonSettings)
-    }
+jsonSettings.drawings[layerId].layerParams[key] = value.toString()
+updateAllQueryParameters(jsonSettings)
+}
 
-    function drawImage(imageWithSettings, contextToDrawOn) {
-        if (imageWithSettings.image.complete && imageWithSettings.image.naturalHeight !== 0) {
+function drawImage(imageWithSettings, contextToDrawOn) {
+if (imageWithSettings.image.complete && imageWithSettings.image.naturalHeight !== 0) {
 
-            //1. create virtual canvas and context for current image
-            var canvas = document.createElement('canvas');
-            var context = canvas.getContext('2d');
+    //1. create virtual canvas and context for current image
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
 
-            //2. set size of contextToDrawOn for the canvas
-            canvas.width = contextToDrawOn.canvas.width
-            canvas.height = contextToDrawOn.canvas.height
+    //2. set size of contextToDrawOn for the canvas
+    canvas.width = contextToDrawOn.canvas.width
+    canvas.height = contextToDrawOn.canvas.height
 
-            //3. set alpha channel for current image
+    //3. set alpha channel for current image
 
-            context.globalAlpha = imageWithSettings.alpha;
+    context.globalAlpha = imageWithSettings.alpha;
 
-            //4. fill the context with color of current image
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(imageWithSettings.image, 0, 0, canvas.width, canvas.height)
-            context.fillStyle = imageWithSettings.color;
-            context.globalCompositeOperation = "source-in";
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            context.globalCompositeOperation = "source-over";
+    //4. fill the context with color of current image
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(imageWithSettings.image, 0, 0, canvas.width, canvas.height)
+    context.fillStyle = imageWithSettings.color;
+    context.globalCompositeOperation = "source-in";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = "source-over";
 
-            //5. render virtual canvases on contextToDrawOn
-            contextToDrawOn.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-        }
-    }
-    function initDrawingsArray(jsonSettings) {
-        var drawingsJson = jsonSettings.drawings;
-        var drawingsImages = []
-        for (let i = 0; i < drawingsJson.length; i++) {
-            drawingImage = new Image();
-            drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawingsJson[i].image;
+    //5. render virtual canvases on contextToDrawOn
+    contextToDrawOn.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+}
+}
+function initDrawingsArray(jsonSettings) {
+var drawingsJson = jsonSettings.drawings;
+var drawingsImages = []
+for (let i = 0; i < drawingsJson.length; i++) {
+    drawingImage = new Image();
+    drawingImage.src = <?= "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\""; ?> + drawingsJson[i].image;
             alpha = parseFloat(drawingsJson[i].layerParams.alpha)
             color = drawingsJson[i].layerParams.color
 
@@ -281,18 +302,6 @@ if(!empty($petroglyph)) {
         }
     }
 
-function saveData() {
-        //1. check:
-    // 1.1. layers titles
-    // 1.2 descriptions
-    // 1.3 alpha values for layers
-    // 1.4 colors for values
-
-    //2.write the data to settings array
-
-    //3. save settings array to db
-
-}
 
 </script>
 <!--<div id="rt_popover" style="width: 200px"><div id="rt_popover">1 : <input type='range' id='0' class='alpha-value' step='0.05' min='-1' max='1' value='0.5'><button value="0" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>2 : <input type='range' id='1' class='alpha-value' step='0.05' min='-1' max='1' value='0.6'><button value="1" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>3 : <input type='range' id='2' class='alpha-value' step='0.05' min='-1' max='1' value='0.8656377'><button value="2" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br></div></div>
