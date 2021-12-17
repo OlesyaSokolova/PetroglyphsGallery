@@ -55,9 +55,10 @@ if(!empty($petroglyph)) {
 
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
-
-    <div id = "description" style="width: 500px">
+<!--add border for the div not for each layer
+-->  <div id = "description" style="width: 500px">
     </div>
+
 </div>
 
 <p>
@@ -242,7 +243,7 @@ function initLayersSettings(jsonSettings) {
             inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
 
 
-            inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
+            inputAlpha += (drawings[i].layerParams.title) + '<br>'
                 + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                 + '<output>' + alphaValue + '</output>'
                 + '<br>'

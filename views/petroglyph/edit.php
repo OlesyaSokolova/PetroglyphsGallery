@@ -5,23 +5,15 @@ use yii\helpers\Html;
 
 if(!empty($petroglyph)) {
     $this->title = "Редактирование: ".$petroglyph->name;
-    //$this->params['breadcrumbs'][] = $this->title;
 } ?>
 <style>
     h1 {
         margin-top: 30px;
         margin-bottom: 30px;
     }
-    /*.petroglyph {
-        float:left; !* Выравнивание по левому краю *!
-        margin: 7px 20px 7px 0; !* Отступы вокруг картинки *!
-    }*/
 
     .box {
         display: flex;
-        /*
-        justify-content: space-between;
-        */
     }
 
 </style>
@@ -31,21 +23,14 @@ if(!empty($petroglyph)) {
 <p>
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
-
-        <?= Html::a(Yii::t('app', 'Сохранить'),
-            ///TODO: SAVE BUTTON!!!
-            ['/petroglyph/view', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-outline-secondary',
-                'name' => 'edit-button',]) ?>
-
+        <button type="button" class="btn btn-outline-secondary" id="save-button">Сохранить</button>
     <?php endif; ?>
 </p>
 
 
 <div class="box">
-    <div style="padding-right: 20px; width: 100px" class="box" id="instruments">
-        +create layer button! - not here
-        //create grid/list for brushes etc
+    <div style="padding-right: 20px; margin-right: 20px" width: 100px" class="box" id="instruments">
+        //сетка/список с инструментами
     </div>
 
     <div class="container-petroglyph" data-state="static">
@@ -58,7 +43,9 @@ if(!empty($petroglyph)) {
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
-    <textarea style="width: 500px" id = "description"></textarea>
+    <div id="description">
+    </div>
+
 </div>
 
 <p>
@@ -71,6 +58,8 @@ if(!empty($petroglyph)) {
     ФИО автора: //$petroglyph->getAuthor()...
 </p>
 <script type="text/javascript">
+
+
 
     function updateSettingsWithUrlParameters(settings) {
         let params = (new URL(document.location.href)).searchParams;
@@ -113,12 +102,15 @@ if(!empty($petroglyph)) {
 
         classNameContainer = 'layers-class'
 
-        if(settings.drawings.length !== 0 ) {
-            var descriptionTextArea = document.getElementById('description');
-            descriptionTextArea.value = settings.drawings[0].layerParams.description;
-            document.getElementById('layer_' + 0).style.background = "#d6d5d5";
-        }
-
+        var saveButton = document.getElementById("save-button");
+        saveButton.addEventListener('click', function (event) {
+            for (let i = 0; i < settings.drawings.length; i++) {
+                settings.drawings[i].layerParams.title = document.getElementById("title_" +i).value;
+                settings.drawings[i].layerParams.alpha = ocument.getElementById('alpha_' + i).value;
+                settings.drawings[i].layerParams.color = document.getElementById('color_' + i).value;
+                settings.drawings[i].layerParams.description = document.getElementById('desc_' + i).value;
+            }
+        });
 
         function updateAllLayers() {
             var originalImageCtx = drawOriginalImage(originalImage)
@@ -129,19 +121,30 @@ if(!empty($petroglyph)) {
             .on('input change', '.alpha-value', function () {
                 $(this).attr('value', $(this).val());
                 var newAlpha = parseFloat($(this).val());
-                var drawingImageId = parseInt($(this).attr('id'));
+                var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
                 drawingsImages[drawingImageId].alpha = newAlpha;
                 updateAllLayers()
                 updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
             })
+
             .on('input change', '.color-value', function () {
                 $(this).attr('value', $(this).val());
                 var newColor = $(this).val();
-                var drawingImageId = parseInt($(this).attr('id'));
+                var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
                 drawingsImages[drawingImageId].color = newColor;
                 updateAllLayers()
                 updateQueryStringParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
-            });
+            })
+
+            .on('input change', '.title-value', function () {
+                $(this).attr('value', $(this).val());
+                var newTitle = $(this).val();
+                var titleId = parseInt(($(this).attr('id')).split('_')[1]);
+                var titleLabel = document.getElementById("descLabel_" + titleId)
+                titleLabel.innerText= newTitle + ':';
+        });
+
+
     }
 
     function updateAllQueryParameters(jsonSettings) {
@@ -234,6 +237,7 @@ if(!empty($petroglyph)) {
     function initLayersSettings(jsonSettings) {
         var drawings = jsonSettings.drawings
         if (Array.isArray(drawings)) {
+            var drawingsDescriptions = '';
             var inputAlpha = '<div id="drawings" style="width: 200px">';
             for (let i = 0; i < drawings.length; i++) {
                 if (typeof drawings[i].layerParams.alpha != 'undefined') {
@@ -242,43 +246,53 @@ if(!empty($petroglyph)) {
                 } else {
                     alphaValue = 1;
                 }
-                var currentId = "layer_" + i;
-                inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
+                var layerId = "layer_" + i;
+                inputAlpha += '<div id=\'' + layerId + '\' style="border:1px solid black">';
 
-                inputAlpha += '<input type="text" style="width: 200px" id=\'' + currentId + '\' value=\'' + (drawings[i].layerParams.title) + '\'/>'
+                var titleId = "title_" + i;
+                var alphaId = "alpha_" + i;
+                var colorId = "color_" + i;
+
+                inputAlpha += '<input type="text" style="width: 200px" id=\'' + titleId + '\' class=\'title-value\' value=\'' + (drawings[i].layerParams.title) + '\'/>'
                     + '<br>'
-                    + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                    + '<input type=\'range\' name="alphaChannel" id=\'' + alphaId + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                     + '<output>' + alphaValue + '</output>'
                     + '<br>'
                     + '<label for="drawingColor">Color:</label>'
-                    + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
+                    + '<input type="color" id=\'' + colorId + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
                 inputAlpha += '</div>';
+
+                var descId = "desc_" + i;
+                var descLabelId = "descLabel_" + i;
+                drawingsDescriptions += (
+                    '<label for=\'' + descId + '\' id=\'' + descLabelId + '\'>'+ (drawings[i].layerParams.title) + ':' + '</label><br>'
+                    + '<textarea id=\'' + descId + '\' style="width: 500px" >'
+                + drawings[i].layerParams.description
+                +'</textarea>'
+                + '<br>')
             }
+
             inputAlpha += '</div>';
             var layersDiv = document.getElementById("layers");
             layersDiv.innerHTML = inputAlpha
 
-            var descriptionTextArea = document.getElementById('description');
-            for (let i = 0; i < drawings.length; i++) {
-                document.getElementById('layer_' + i)
-                    .addEventListener('click', function (event) {
-                        descriptionTextArea.value = drawings[i].layerParams.description
-                        this.style.background = "#d6d5d5";
-
-                        function clearOtherLayersDivs(i) {
-                            for (let j = 0; j < drawings.length; j++) {
-                                if(i !== j) {
-                                    document.getElementById('layer_' + j).style.background = "#ffffff";
-                                }
-                            }
-                        }
-
-                        clearOtherLayersDivs(i)
-                    });
-            }
+            var descriptions = document.getElementById('description');
+            descriptions.innerHTML = drawingsDescriptions
         }
     }
 
+function saveData() {
+        //1. check:
+    // 1.1. layers titles
+    // 1.2 descriptions
+    // 1.3 alpha values for layers
+    // 1.4 colors for values
+
+    //2.write the data to settings array
+
+    //3. save settings array to db
+
+}
 
 </script>
 <!--<div id="rt_popover" style="width: 200px"><div id="rt_popover">1 : <input type='range' id='0' class='alpha-value' step='0.05' min='-1' max='1' value='0.5'><button value="0" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>2 : <input type='range' id='1' class='alpha-value' step='0.05' min='-1' max='1' value='0.6'><button value="1" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>3 : <input type='range' id='2' class='alpha-value' step='0.05' min='-1' max='1' value='0.8656377'><button value="2" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br></div></div>
