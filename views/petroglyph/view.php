@@ -5,23 +5,15 @@ use yii\helpers\Html;
 
 if(!empty($petroglyph)) {
     $this->title = $petroglyph->name;
-    //$this->params['breadcrumbs'][] = $this->title;
 } ?>
 <style>
     h1 {
         margin-top: 30px;
         margin-bottom: 30px;
     }
-    /*.petroglyph {
-        float:left; !* Выравнивание по левому краю *!
-        margin: 7px 20px 7px 0; !* Отступы вокруг картинки *!
-    }*/
 
     .box {
         display: flex;
-        /*
-        justify-content: space-between;
-        */
     }
 
 </style>
@@ -55,13 +47,13 @@ if(!empty($petroglyph)) {
 
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
-<!--add border for the div not for each layer
--->  <div id = "description" style="width: 500px">
+
+     <div id = "description" style="width: 500px">
     </div>
 
 </div>
 
-<p>
+<p style="margin-top: 20px">
     <?= $petroglyph->description ?>
 </p>
 <p>

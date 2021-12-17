@@ -18,7 +18,7 @@ if(!empty($petroglyph)) {
 
 </style>
 
-<h1> <?= $this->title ?>
+<h1><?=$this->title?>
 </h1>
 
 <label for="name">Название экспоната:</label>
@@ -52,8 +52,7 @@ if(!empty($petroglyph)) {
 
 </div>
 
-<div id="mainDesc" contenteditable="true" style="border:1px solid black; margin-top: 20px">
-    <?= $petroglyph->description ?>
+<div id="mainDesc" contenteditable="true" style="border:1px solid black; margin-top: 20px"><?=$petroglyph->description?>
 </div>
 
 <p>
@@ -84,6 +83,7 @@ if(!empty($petroglyph)) {
 
         originalImageSrc = <?= "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"" ?>;
         settings = <?= $petroglyph->settings ?>;
+        petroglyphId = <?= $petroglyph->id ?>
 
         //1. check if url params are not the same as params from db and update them if necessary
         updateSettingsWithUrlParameters(settings);
@@ -109,30 +109,35 @@ if(!empty($petroglyph)) {
                 settings.drawings[i].layerParams.color = document.getElementById('color_' + i).value;
                 settings.drawings[i].layerParams.description = document.getElementById('desc_' + i).value;
             }
-            mainDescription = document.getElementById('mainDesc').value
+            mainDescription = document.getElementById('mainDesc').textContent;
+            name = document.getElementById('name').value;
 
     /* @property int id
 * @property string name
 * @property string description //description of petroglyph
 * @property string image //link to an original image
 * @property string settings */
-    var data = [];
-    data.push({ Company: "Microsoft", Location: "Redmond" , Total:123 });
-    data.push({ Company: "UrbanScience", Location:"Detroit", Total:456 });
-
-    $.ajax({
-        type: "POST",
-        url: '@Url.Action("ExportCalgary")',
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        success: function(data) {
-            console.log("data :", data);
-            // Do something with the response
-        },
-        error: function() {
-            alert('Failed');
-        }
-    });
+           var newData = {
+                id: petroglyphId,
+                newName: name,
+                newDescription: mainDescription,
+                newSettings: settings,
+                //image: 'photo'
+            };
+            //var mydata = "test";
+            $.ajax({
+                type: "POST",
+                url: "/petroglyphs/web/index.php/petroglyph/save",
+                //contentType: "application/json; charset=utf-8",
+                data: { params: JSON.stringify(newData)},
+                success: function(data){
+                    //alert(data);
+                    location.href = "http://localhost/petroglyphs/web/index.php/petroglyph/view?id="+petroglyphId
+                },
+                error: function(xhr, status, error){
+                    alert("Произошла ошибка при сохранении данных:" + xhr);
+                }
+            });
 });
 
 function updateAllLayers() {
