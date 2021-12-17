@@ -248,7 +248,7 @@ function initLayersSettings(jsonSettings) {
 
 
             inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
-                + ': <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                 + '<output>' + alphaValue + '</output>'
                 + '<br>'
                 + '<label for="drawingColor">Color:</label>'

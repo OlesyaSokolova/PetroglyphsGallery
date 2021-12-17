@@ -242,9 +242,9 @@ if(!empty($petroglyph)) {
                 var currentId = "layer_" + i;
                 inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
 
-                //todo: make title editable
-                inputAlpha += (drawings[i].layerParams.title)//TODO: LAYER TITLE!!!!
-                    + ': <input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                inputAlpha += '<input type="text" style="width: 200px" id=\'' + currentId + '\' value=\'' + (drawings[i].layerParams.title) + '\'/>'
+                    + '<br>'
+                    + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                     + '<output>' + alphaValue + '</output>'
                     + '<br>'
                     + '<label for="drawingColor">Color:</label>'
@@ -263,6 +263,7 @@ if(!empty($petroglyph)) {
                     .addEventListener('click', function (event) {
                         descriptionDiv.innerText = drawings[i].layerParams.description
                         this.style.background = "#d6d5d5";
+
 
                         function clearOtherLayersDivs(i) {
                             for (let j = 0; j < drawings.length; j++) {
