@@ -43,6 +43,11 @@ if(!empty($petroglyph)) {
 
 
 <div class="box">
+    <div style="padding-right: 20px; width: 100px" class="box" id="instruments">
+        +create layer button! - not here
+        //create grid/list for brushes etc
+    </div>
+
     <div class="container-petroglyph" data-state="static">
         <div class="canvas-petroglyph">
             <canvas id="petroglyphCanvas">
@@ -53,8 +58,7 @@ if(!empty($petroglyph)) {
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
-    <div id = "description">
-    </div>
+    <textarea style="width: 500px" id = "description"></textarea>
 </div>
 
 <p>
@@ -106,13 +110,12 @@ if(!empty($petroglyph)) {
         var originalImageCtx = drawOriginalImage(originalImage)
         addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
         initLayersSettings(jsonSettings = settings)
-        //addSettingsToUrl()
 
         classNameContainer = 'layers-class'
 
         if(settings.drawings.length !== 0 ) {
-            var descriptionDiv = document.getElementById('description');
-            descriptionDiv.innerText = settings.drawings[0].layerParams.description;
+            var descriptionTextArea = document.getElementById('description');
+            descriptionTextArea.value = settings.drawings[0].layerParams.description;
             document.getElementById('layer_' + 0).style.background = "#d6d5d5";
         }
 
@@ -255,15 +258,12 @@ if(!empty($petroglyph)) {
             var layersDiv = document.getElementById("layers");
             layersDiv.innerHTML = inputAlpha
 
-            //change layers description
-            //todo: make descriptions editable
-            var descriptionDiv = document.getElementById('description');
+            var descriptionTextArea = document.getElementById('description');
             for (let i = 0; i < drawings.length; i++) {
                 document.getElementById('layer_' + i)
                     .addEventListener('click', function (event) {
-                        descriptionDiv.innerText = drawings[i].layerParams.description
+                        descriptionTextArea.value = drawings[i].layerParams.description
                         this.style.background = "#d6d5d5";
-
 
                         function clearOtherLayersDivs(i) {
                             for (let j = 0; j < drawings.length; j++) {

@@ -56,7 +56,7 @@ if(!empty($petroglyph)) {
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
-    <div id = "description">
+    <div id = "description" style="width: 500px">
     </div>
 </div>
 
@@ -82,13 +82,9 @@ if(!empty($petroglyph)) {
                     settings.drawings[i].layerParams[keysToUpdateValue[j]] = decodeURIComponent(value)
                 }
                 else {
-                    //some value is not set - it is necessary to put it to url from db
-                    //return false
                 }
             }
         }
-        //var test = params.get("id")
-        //return true
     }
 
     window.onload = function() {
@@ -109,7 +105,6 @@ if(!empty($petroglyph)) {
         var originalImageCtx = drawOriginalImage(originalImage)
         addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
         initLayersSettings(jsonSettings = settings)
-        //addSettingsToUrl()
 
         classNameContainer = 'layers-class'
 
@@ -196,7 +191,7 @@ function drawImage(imageWithSettings, contextToDrawOn) {
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.globalCompositeOperation = "source-over";
 
-        //5. render virtual canvases on contextToDrawOn
+        //5. render virtual canvase with image on contextToDrawOn
         contextToDrawOn.drawImage(canvas, 0, 0, canvas.width, canvas.height);
     }
 }
@@ -259,7 +254,6 @@ function initLayersSettings(jsonSettings) {
         var layersDiv = document.getElementById("layers");
         layersDiv.innerHTML = inputAlpha
 
-        //change layers description
         var descriptionDiv = document.getElementById('description');
         for (let i = 0; i < drawings.length; i++) {
             document.getElementById('layer_' + i)
