@@ -63,7 +63,7 @@ AppAsset::register($this);
     $userRoles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId());
 
     if (isset($userRoles['author']) || isset($userRoles['admin'])) {
-        $menuItems[] = ['label' => 'Мои публикации', 'url' => ['/gallery/publications']];
+        $menuItems[] = ['label' => 'Мои публикации', 'url' => ['/site/publications']];
     }
     if (isset($userRoles['admin'])) {
         //TODO: закрыть доступ к этой ссылке остальным пользователям
@@ -77,12 +77,12 @@ AppAsset::register($this);
     $authenticationItems = [];
 
     if (Yii::$app->user->isGuest) {
-        $authenticationItems[] = ['label' => 'Регистрация', 'url' => ['/gallery/signup']];
-        $authenticationItems[] = ['label' => 'Вход', 'url' => ['/gallery/login']];
+        $authenticationItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
+        $authenticationItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
     } else {
         //$authenticationItems[] = ['label' => 'Мои публикации', 'url' => ['/gallery/publications']];
         $authenticationItems[] = '<li>'
-            . Html::beginForm(['/gallery/logout'], 'post')
+            . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
                 'Выход (' . Yii::$app->user->identity->email . ')',
                 //'Выход',

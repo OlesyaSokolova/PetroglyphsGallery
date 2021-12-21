@@ -11,7 +11,7 @@ use yii\web\Controller;
 
 class GalleryController extends Controller
 {
-    public function actionManageUsers()
+    /*public function actionManageUsers()
     {
         echo 'Управление пользователями доступно только администратору.';
     }
@@ -92,5 +92,5 @@ class GalleryController extends Controller
             'petroglyphs' => $petroglyphs,
             'pages' => $pages,
         ]);
-    }
+    }*/
 }

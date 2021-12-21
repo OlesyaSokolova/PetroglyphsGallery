@@ -7,12 +7,16 @@ use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'Petroglyphs';
+$this->title = 'Personal publications';
 
 
 //echo "<img src='http://localhost/petroglyphs/storage/test_png.png'>";
 ?>
-<h1>HAHAHAHAHAHAAHAH</h1>
+<!--<div class="site-index">
+    <div class="jumbotron text-center bg-transparent">
+        <h1 class="display-4">All petroglyphs</h1>
+    </div>
+</div>-->
 <style>
     h1 {
         margin-top: 20px;
@@ -61,14 +65,14 @@ $this->title = 'Petroglyphs';
         }
     }
 </style>
-<h1>Все петроглифы</h1>
+<h1>Мои публикации</h1>
 <div id="w0" class="list-view">
     <?php if (!empty($petroglyphs)):
         //var_dump($petroglyphs); ?>
         <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($petroglyphs as $petroglyph): ?>
                 <div class="column">
-<!--                    <a href="<?/*= Url::to(Petroglyph::VIEW_URL.'?id='.$petroglyph['id'], true)*/?>" class="petroglyph-item">
+                    <!--                    <a href="<?/*= Url::to(Petroglyph::VIEW_URL.'?id='.$petroglyph['id'], true)*/?>" class="petroglyph-item">
 -->                        <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
 
                         <div class="row">
@@ -78,7 +82,7 @@ $this->title = 'Petroglyphs';
                             <?= $petroglyph->name ?>
                         </h3>
                     </a>
-              </div>
+                </div>
             <?php endforeach;
             ?>
         </div>
