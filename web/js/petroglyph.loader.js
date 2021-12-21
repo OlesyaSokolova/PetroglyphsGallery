@@ -29,14 +29,16 @@ function prepareView() {
             var newColor = $(this).val();
             var drawingImageId = parseInt($(this).attr('id'));
             drawingsImages[drawingImageId].color = newColor;
-            updateAllLayers()
+            updateAllLayers(drawingsImages)
             updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
         });
 
     if (settings.drawings.length !== 0) {
         var descriptionDiv = document.getElementById('description');
+        var layerTitle = document.getElementById('layer_title');
         descriptionDiv.innerText = settings.drawings[0].layerParams.description;
         document.getElementById('layer_' + 0).style.background = "#d6d5d5";
+        layerTitle.innerText = settings.drawings[0].layerParams.title
     }
 }
 
@@ -52,12 +54,9 @@ function initLayersSettings(jsonSettings) {
                 alphaValue = 1;
             }
             var currentId = "layer_" + i;
-            inputAlpha += '<div id=\'' + currentId + '\' style="border:1px solid black">';
-
-
+            inputAlpha += '<div id=\'' + currentId + '\' class = "bordered_div" style="border:1px solid black; border-radius: 10px; text-align: center; margin-bottom: 10px">';
             inputAlpha += (drawings[i].layerParams.title) + '<br>'
                 + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
-                + '<output>' + alphaValue + '</output>'
                 + '<br>'
                 + '<label for="drawingColor">Color:</label>'
                 + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
@@ -68,11 +67,13 @@ function initLayersSettings(jsonSettings) {
         layersDiv.innerHTML = inputAlpha
 
         var descriptionDiv = document.getElementById('description');
+        var layerTitle = document.getElementById('layer_title');
         for (let i = 0; i < drawings.length; i++) {
             document.getElementById('layer_' + i)
                 .addEventListener('click', function (event) {
                     descriptionDiv.innerText = drawings[i].layerParams.description
                     this.style.background = "#d6d5d5";
+                    layerTitle.innerText = drawings[i].layerParams.title
 
                     function clearOtherLayersDivs(i) {
                         for (let j = 0; j < drawings.length; j++) {

@@ -40,7 +40,6 @@ JS;
     <?php endif; ?>
 </p>
 
-
 <div class="box" style="display: flex">
     <div class="container-petroglyph" data-state="static">
         <div class="canvas-petroglyph">
@@ -52,14 +51,23 @@ JS;
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
-     <div id = "description" style="width: 500px">
-    </div>
+
+    <div id = layer_info style="border:1px solid black;
+                border-radius: 10px;
+                width: 700px;
+                text-align: center;
+                margin-bottom: 10px">
+        <h5 id =layer_title></h5>
+         <div id = "description" >
+        </div>
+</div>
 
 </div>
 
 <p style="margin-top: 20px">
     <?= $petroglyph->description ?>
 </p>
+
 <!--<p>
     ФИО автора: //$petroglyph->getAuthor()...
 </p>-->

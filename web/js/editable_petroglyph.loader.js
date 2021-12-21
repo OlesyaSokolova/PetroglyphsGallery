@@ -11,7 +11,7 @@ function prepareEditablePetroglyph() {
     var drawingsImages = initDrawingsArray(jsonSettings = settings)
     var originalImageCtx = drawOriginalImage(originalImage)
     addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
-    initLayersSettings(jsonSettings = settings)
+    initLayersSettingsForEdit(jsonSettings = settings)
 
     classNameContainer = 'layers-class'
 
@@ -21,7 +21,7 @@ function prepareEditablePetroglyph() {
             var newAlpha = parseFloat($(this).val());
             var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
             drawingsImages[drawingImageId].alpha = newAlpha;
-            updateAllLayers()
+            updateAllLayers(drawingsImages)
             updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
         })
 
@@ -30,7 +30,7 @@ function prepareEditablePetroglyph() {
             var newColor = $(this).val();
             var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
             drawingsImages[drawingImageId].color = newColor;
-            updateAllLayers()
+            updateAllLayers(drawingsImages)
             updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
         })
 
@@ -73,7 +73,7 @@ function prepareEditablePetroglyph() {
     })
 }
 
-function initLayersSettings(jsonSettings) {
+function initLayersSettingsForEdit(jsonSettings) {
     var drawings = jsonSettings.drawings
     if (Array.isArray(drawings)) {
         var drawingsDescriptions = '';

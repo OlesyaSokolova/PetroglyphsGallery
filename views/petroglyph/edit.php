@@ -53,7 +53,10 @@ JS;
     <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
     </div>
 
-    <div id="description">
+    <div id="description" style="border:1px solid black;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 10px">
     </div>
 
 </div>
