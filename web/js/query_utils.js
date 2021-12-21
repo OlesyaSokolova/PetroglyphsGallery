@@ -1,12 +1,12 @@
 function updateAllQueryParameters(jsonSettings) {
     const keysToUpdateValue = ["alpha", "color"];
     var drawings = jsonSettings.drawings;
+    var uri = window.location.href
     for (let i = 0; i < drawings.length; i++) {
         var layerParams = drawings[i].layerParams
         for (var key in layerParams) {
             if(keysToUpdateValue.includes(key)) {
                 var specialKey = "drawings_" + i + "_layerParams_" + key;
-                uri = window.location.href
                 var re = new RegExp("([?&])" + specialKey + "=.*?(&|$)", "i");
                 var separator = uri.indexOf('?') !== -1 ? "&" : "?";
                 if (uri.match(re)) {
@@ -14,9 +14,12 @@ function updateAllQueryParameters(jsonSettings) {
                 } else {
                     uri += (separator + specialKey + "=" + encodeURIComponent(layerParams[key]));
                 }
-                window.history.pushState("", uri);
             }
         }
+    }
+    if (window.history.replaceState) {
+        //prevents browser from storing history with each change:
+        window.history.replaceState(null, '', uri);
     }
 }
 function updateOneQueryParameter(jsonSettings, layerId, key, value) {

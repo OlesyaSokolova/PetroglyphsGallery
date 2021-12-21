@@ -13,7 +13,7 @@ if(!empty($petroglyph)) {
     settings = $petroglyph->settings
     drawingPathPrefix =  $drawingPathPrefix
    
-    prepareEditablePetroglyph()
+   window.onload =  prepareEditablePetroglyph
 
 JS;
 
