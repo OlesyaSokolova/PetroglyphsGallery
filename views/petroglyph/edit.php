@@ -4,11 +4,13 @@ use app\assets\ViewAsset;
 use app\models\Petroglyph;
 
 if(!empty($petroglyph)) {
+
     $this->title = "Редактирование: ".$petroglyph->name;
     $originalImageSrc = "\"" . Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image . "\"";
     $drawingPathPrefix = "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\"";
 
     $script = <<< JS
+    petroglyphId = $petroglyph->id;
     originalImageSrc = $originalImageSrc
     settings = $petroglyph->settings
     drawingPathPrefix =  $drawingPathPrefix
@@ -26,7 +28,7 @@ JS;
 <p>
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
-        <button type="button" class="btn btn-primary" id="save-button">Сохранить</button>
+        <button type="button" class="btn btn-outline-primary btn-rounded" id="save-button">Сохранить</button>
     <?php endif; ?>
 </p>
 

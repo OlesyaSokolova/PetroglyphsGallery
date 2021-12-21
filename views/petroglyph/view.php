@@ -26,19 +26,21 @@ JS;
 <h1><?= $this->title ?></h1>
 
 <p>
-    <button type="button" class="btn btn-primary" id="reset-button">Сбросить настройки слоев</button>
+    <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Сбросить настройки слоев</button>
 </p>
-    <?php if (Yii::$app->user->can('updatePost',
+
+    <?php
+    if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
 
         <?= Html::a(Yii::t('app', 'Редактировать'),
             ['/petroglyph/edit', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-primary',
+            ['class' => 'btn btn-outline-primary btn-rounded',
                 'name' => 'edit-button',]) ?>
 
         <?= Html::a(Yii::t('app', 'Удалить'),
             ['/petroglyph/delete', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-primary',
+            ['class' => 'btn btn-outline-danger btn-rounded',
                 'name' => 'delete-button',]) ?>
 
     <?php endif; ?>
