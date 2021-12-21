@@ -7,11 +7,7 @@ use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'Галерея';
-
-
-//echo "<img src='http://localhost/petroglyphs/storage/test_png.png'>";
-?>
+$this->title = 'Петроглифы'; ?>
 <style>
     h1 {
         margin-top: 20px;
@@ -44,7 +40,6 @@ $this->title = 'Галерея';
         width: 100%;
     }
 
-    /* Responsive layout - makes a two column-layout instead of four columns */
     @media screen and (max-width: 800px) {
         .column {
             flex: 50%;
@@ -52,7 +47,6 @@ $this->title = 'Галерея';
         }
     }
 
-    /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
     @media screen and (max-width: 600px) {
         .column {
             flex: 100%;
@@ -62,13 +56,11 @@ $this->title = 'Галерея';
 </style>
 <h1>Все петроглифы</h1>
 <div id="w0" class="list-view">
-    <?php if (!empty($petroglyphs)):
-        //var_dump($petroglyphs); ?>
+    <?php if (!empty($petroglyphs)):?>
         <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($petroglyphs as $petroglyph): ?>
                 <div class="column">
-                    <!--                    <a href="<?/*= Url::to(Petroglyph::VIEW_URL.'?id='.$petroglyph['id'], true)*/?>" class="petroglyph-item">
--->                        <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
+                       <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
 
                         <div class="row">
                             <?= Html::img(Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
@@ -77,7 +69,7 @@ $this->title = 'Галерея';
                             <?= $petroglyph->name ?>
                         </h3>
                     </a>
-                </div>
+              </div>
             <?php endforeach;
             ?>
         </div>

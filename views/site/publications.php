@@ -7,7 +7,7 @@ use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'Personal publications';
+$this->title = 'Публикации';
 
 
 //echo "<img src='http://localhost/petroglyphs/storage/test_png.png'>";

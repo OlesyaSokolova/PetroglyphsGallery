@@ -96,4 +96,9 @@ class SiteController extends Controller
             'pages' => $pages,
         ]);
     }
+
+    public function actionAbout()
+    {
+        return $this->render('about');
+    }
 }

@@ -33,8 +33,6 @@ AppAsset::register($this);
         }
     }
     .wrap {
-       /* min-height: 100%;
-       height: auto;*/
         margin: 0 auto 20px;
         padding: 0 0 65px;
     }
@@ -53,7 +51,6 @@ AppAsset::register($this);
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-            //'class' => 'navbar-inverse navbar-dark bg-dark fixed-top'
         ],
     ]);
 

@@ -8,7 +8,7 @@ use yii\bootstrap4\ActiveForm;
 
 $this->title = 'Регистрация';
 ?>
-<div class="gallery-signup">
+<div class="site-signup">
     <h1><?= Html::encode($this->title) ?></h1>
     <p>Пожалуйста, заполните поля:</p>
     <div class="row">
