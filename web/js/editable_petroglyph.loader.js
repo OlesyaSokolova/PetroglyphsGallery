@@ -34,13 +34,13 @@ function prepareEditablePetroglyph() {
             updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
         })
 
-        .on('input change', '.title-value', function () {
+        /*.on('input change', '.title-value', function () {
             $(this).attr('value', $(this).val());
             var newTitle = $(this).val();
             var titleId = parseInt(($(this).attr('id')).split('_')[1]);
             var titleLabel = document.getElementById("descLabel_" + titleId)
             titleLabel.innerText= newTitle + ':';
-        });
+        });*/
 
     var saveButton = document.getElementById("save-button");
     saveButton.addEventListener('click', function (event) {
@@ -76,8 +76,8 @@ function prepareEditablePetroglyph() {
 function initLayersSettingsForEdit(jsonSettings) {
     var drawings = jsonSettings.drawings
     if (Array.isArray(drawings)) {
-        var drawingsDescriptions = '';
-        var inputAlpha = '<div id="drawings" style="width: 200px">';
+
+        var layerInfo = '<form>';
         for (let i = 0; i < drawings.length; i++) {
             if (typeof drawings[i].layerParams.alpha != 'undefined') {
                 alphaValue = drawings[i].layerParams.alpha;
@@ -86,36 +86,40 @@ function initLayersSettingsForEdit(jsonSettings) {
                 alphaValue = 1;
             }
             var layerId = "layer_" + i;
-            inputAlpha += '<div id=\'' + layerId + '\' style="border:1px solid black">';
+            layerInfo += '<div className="form-group" id=\'' + layerId + '\' style="border:1px solid black;\n' +
+                '                border-radius: 10px;\n' +
+                '                padding-left: 20px;\n' +
+                '                width: 700px;\n' +
+                '                text-align: left;\n' +
+                '                margin-bottom: 10px">';
 
             var titleId = "title_" + i;
             var alphaId = "alpha_" + i;
             var colorId = "color_" + i;
-
-            inputAlpha += '<input type="text" style="width: 200px" id=\'' + titleId + '\' class=\'title-value\' value=\'' + (drawings[i].layerParams.title) + '\'/>'
-                + '<br>'
-                + '<input type=\'range\' name="alphaChannel" id=\'' + alphaId + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
-                + '<output>' + alphaValue + '</output>'
-                + '<br>'
-                + '<label for="drawingColor">Color:</label>'
-                + '<input type="color" id=\'' + colorId + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
-            inputAlpha += '</div>';
-
             var descId = "desc_" + i;
-            var descLabelId = "descLabel_" + i;
-            drawingsDescriptions += (
-                '<label for=\'' + descId + '\' id=\'' + descLabelId + '\'>'+ (drawings[i].layerParams.title) + ':' + '</label><br>'
-                + '<textarea id=\'' + descId + '\' style="width: 500px" >'
+
+            layerInfo += '<label for=\'' + titleId + '\'>Название: </label>'
+                + '<input type="text" id=\'' + titleId + '\' class="form-control" value=\'' + (drawings[i].layerParams.title) + '\'/>'
+                + '<br>'
+
+                + '<label for=\'' + alphaId + '\'>Прозрачность: </label>'
+                + '<input type=\'range\' name="alphaChannel" id=\'' + alphaId + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
+                + '<br>'
+
+                + '<label for=\'' + colorId + '\'>Цвет: </label>'
+                + '<input type="color" id=\'' + colorId + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>'
+
+                + '<label for=\'' + descId + '\'>Описание: </label>'
+                + '<textarea id=\'' + descId + '\' style="width: 500px" class="form-control">'
                 + drawings[i].layerParams.description
                 +'</textarea>'
-                + '<br>')
+                + '<br>'
+
+            layerInfo += '</div>';
         }
 
-        inputAlpha += '</div>';
+        layerInfo += '</form>';
         var layersDiv = document.getElementById("layers");
-        layersDiv.innerHTML = inputAlpha
-
-        var descriptions = document.getElementById('description');
-        descriptions.innerHTML = drawingsDescriptions
+        layersDiv.innerHTML = layerInfo
     }
 }

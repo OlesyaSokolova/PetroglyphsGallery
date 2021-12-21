@@ -58,7 +58,7 @@ function initLayersSettings(jsonSettings) {
             inputAlpha += (drawings[i].layerParams.title) + '<br>'
                 + '<input type=\'range\' name="alphaChannel" id=\'' + i + '\' class=\'alpha-value\' step=\'0.02\' min=\'0\' max=\'1\' value=\'' + alphaValue + '\' oninput=\"this.nextElementSibling.value = this.value\">'
                 + '<br>'
-                + '<label for="drawingColor">Color:</label>'
+                + '<label for="drawingColor">Цвет: </label>'
                 + '<input type="color" id=\'' + i + '\' class =\'color-value\' value=\'' + colorValue + '\' name="drawingColor"></button>' + '<br>';
             inputAlpha += '</div>';
         }

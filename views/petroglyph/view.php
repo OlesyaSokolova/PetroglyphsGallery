@@ -30,13 +30,14 @@ JS;
 
         <?= Html::a(Yii::t('app', 'Редактировать'),
             ['/petroglyph/edit', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-outline-secondary',
+            ['class' => 'btn btn-primary',
                 'name' => 'edit-button',]) ?>
 
         <?= Html::a(Yii::t('app', 'Удалить'),
             ['/petroglyph/delete', 'id' => $petroglyph->id],
-            ['class' => 'btn btn-outline-secondary',
+            ['class' => 'btn btn-primary',
                 'name' => 'delete-button',]) ?>
+
     <?php endif; ?>
 </p>
 
@@ -52,12 +53,14 @@ JS;
     </div>
 
 
-    <div id = layer_info style="border:1px solid black;
+    <div id=layer_info style="border:1px solid black;
                 border-radius: 10px;
                 width: 700px;
                 text-align: center;
                 margin-bottom: 10px">
-        <h5 id =layer_title></h5>
+
+        <h5 id ="layer_title"> </h5>
+
          <div id = "description" >
         </div>
 </div>

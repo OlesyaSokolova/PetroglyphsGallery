@@ -24,20 +24,17 @@ JS;
 <h1><?=$this->title?>
 </h1>
 
-<label for="name">Название экспоната:</label>
-<input type="text" id="name" value=" <?= $petroglyph->name ?>"/>
+<form>
+    <div class="form-group">
+        <label for="name">Название экспоната: </label>
+        <input type="text" class="form-control" id="name" value=" <?= $petroglyph->name ?>">
+    </div>
+</form>
 
-<p>
-    <?php if (Yii::$app->user->can('updatePost',
-        ['petroglyph' => $petroglyph])):?>
-        <button type="button" class="btn btn-outline-secondary" id="save-button">Сохранить</button>
-    <?php endif; ?>
-</p>
 
 
 <div class="box" style="
-    display: flex;
-    padding-right: 20px
+    display: flex
 ">
     <!--<div class="box" id="instruments">
         //сетка/список с инструментами
@@ -48,20 +45,19 @@ JS;
             <canvas id="petroglyphCanvas">
             </canvas>
         </div>
+
+        <form>
+            <div class="form-group">
+                <label for="mainDesc">Основное описание:</label>
+                <textarea class="form-control" id="mainDesc" rows="10"><?= $petroglyph->description ?>"</textarea>
+            </div>
+        </form>
     </div>
 
-    <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
+
+    <div id="layers" class = "layers-class" style="
+        padding-left: 20px;">
     </div>
-
-    <div id="description" style="border:1px solid black;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 10px">
-    </div>
-
-</div>
-
-<div id="mainDesc" contenteditable="true" style="border:1px solid black; margin-top: 20px"><?=$petroglyph->description?>
 </div>
 
 <!--<p>
@@ -70,12 +66,12 @@ JS;
 <!--<p>
     ФИО автора: //$petroglyph->getAuthor()...
 </p>-->
-<script type="text/javascript">
-
-
-
-
-</script>
+<p>
+    <?php if (Yii::$app->user->can('updatePost',
+        ['petroglyph' => $petroglyph])):?>
+        <button type="button" class="btn btn-primary" id="save-button">Сохранить</button>
+    <?php endif; ?>
+</p>
 <!--<div id="rt_popover" style="width: 200px"><div id="rt_popover">1 : <input type='range' id='0' class='alpha-value' step='0.05' min='-1' max='1' value='0.5'><button value="0" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>2 : <input type='range' id='1' class='alpha-value' step='0.05' min='-1' max='1' value='0.6'><button value="1" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br>3 : <input type='range' id='2' class='alpha-value' step='0.05' min='-1' max='1' value='0.8656377'><button value="2" class="btn menu-object cp-button" data-menu="layer_pallete" data-html="true" data-container="#rt_popover"data-toggle="popover" data-placement="bottom"><i class="fas fa-palette"></i></button><br></div></div>
 --><?php /*if ($categoryId): */?><!--
     <div class="clearfix">
