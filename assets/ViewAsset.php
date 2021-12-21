@@ -17,18 +17,16 @@ class ViewAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
-    /*public $css = [
-    'css/loader.object.css',
-    'css/jquery.fancybox.min.css',
-    'css/colorpicker.css',
-    ];*/
-public $js = [
-    'js/viewer.js',
-    //'js/label.js',
-    'js/petroglyph.loader.js',
-    ];
-public $depends = [
-    'yii\web\YiiAsset',
-    'yii\bootstrap4\BootstrapAsset',
-    ];
+
+    public $js = [
+        'js/query_utils.js',
+        'js/canvas_utils.js',
+        'js/petroglyph.loader.js',
+        'js/editable_petroglyph.loader.js',
+        ];
+
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap4\BootstrapAsset',
+        ];
 }
