@@ -49,6 +49,14 @@ function prepareView() {
     var resetButton = document.getElementById("reset-button");
     resetButton.addEventListener('click', function (event) {
         reloadSettings(defaultSettings, drawingsImages)
+
+        if (settings.drawings.length !== 0) {
+            var descriptionDiv = document.getElementById('description');
+            var layerTitle = document.getElementById('layer_title');
+            descriptionDiv.innerText = settings.drawings[0].layerParams.description;
+            document.getElementById('layer_' + 0).style.background = "#d6d5d5";
+            layerTitle.innerText = settings.drawings[0].layerParams.title
+        }
     })
 }
 

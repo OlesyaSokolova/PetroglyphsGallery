@@ -94,7 +94,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">footer, <?= date('Y') ?></p>
+        <p class="pull-left">Новосибирский Госудраственный Универститет, <?= date('Y') ?></p>
     </div>
 </footer>
 
