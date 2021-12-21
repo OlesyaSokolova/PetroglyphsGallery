@@ -26,24 +26,7 @@ AppAsset::register($this);
 
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody(); ?>
-<style>
-    @media (min-width: 1200px) {
-        .container {
-            max-width: 1500px;
-        }
-    }
-    .wrap {
-        margin: 0 auto 20px;
-        padding: 0 0 65px;
-    }
 
-    .wrap > .container {
-        padding: 30px 15px 30px
-    }
-    .footer {
-        position: relative;
-    }
-</style>
  <div class="wrap">
     <?php
     NavBar::begin([

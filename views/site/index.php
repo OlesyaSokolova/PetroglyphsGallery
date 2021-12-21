@@ -8,52 +8,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Петроглифы'; ?>
-<style>
-    h1 {
-        margin-top: 20px;
-        margin-bottom: 30px;
-    }
-    .petroglyph-item {
-        display: block;
-        border: solid 2px #e1e1e1;
-        padding: 0 15px 15px 15px;
-        margin-bottom: 25px;
-        color: #000; }
-    .petroglyph-item:hover {
-        text-decoration: none;
-        border: solid 2px #7288e1;
-    }
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 0 4px;
-    }
-    .column {
-        flex: 25%;
-        max-width: 25%;
-        padding: 0 4px;
-    }
 
-    .column img {
-        margin-top: 8px;
-        vertical-align: middle;
-        width: 100%;
-    }
-
-    @media screen and (max-width: 800px) {
-        .column {
-            flex: 50%;
-            max-width: 50%;
-        }
-    }
-
-    @media screen and (max-width: 600px) {
-        .column {
-            flex: 100%;
-            max-width: 100%;
-        }
-    }
-</style>
 <h1>Все петроглифы</h1>
 <div id="w0" class="list-view">
     <?php if (!empty($petroglyphs)):?>
