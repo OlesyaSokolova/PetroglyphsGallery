@@ -1,8 +1,13 @@
 function prepareView() {
-    //1. check if url params are not the same as params from db and update them if necessary
-    putSettingsAsQueryParameters(settings);
 
-    //2. put settings (= some from url + some from db) to url
+    //0.save settings for reset
+    //defaultSettings = settings;
+    defaultSettings = JSON.parse(JSON.stringify(settings));
+
+    //1. update settings from query (if exist)
+    updateSettingsFromQuery(settings);
+
+    //2. put (updated) settings to url
     updateAllQueryParameters(settings)
 
     originalImage = new Image();
@@ -40,6 +45,18 @@ function prepareView() {
         document.getElementById('layer_' + 0).style.background = "#d6d5d5";
         layerTitle.innerText = settings.drawings[0].layerParams.title
     }
+
+    var resetButton = document.getElementById("reset-button");
+    resetButton.addEventListener('click', function (event) {
+        reloadSettings(defaultSettings, drawingsImages)
+    })
+}
+
+
+function reloadSettings(defaultSettings, drawingsImages) {
+    initLayersSettings(defaultSettings)
+    updateAllLayers(initDrawingsArray(defaultSettings))
+    updateAllQueryParameters(defaultSettings)
 }
 
 function initLayersSettings(jsonSettings) {

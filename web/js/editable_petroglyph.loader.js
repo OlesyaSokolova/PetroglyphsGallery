@@ -1,8 +1,9 @@
 function prepareEditablePetroglyph() {
-    //1. check if url params are not the same as params from db and update them if necessary
-    putSettingsAsQueryParameters(settings);
 
-    //2. put settings (= some from url + some from db) to url
+    //1. update settings from query (if exist)
+    updateSettingsFromQuery(settings);
+
+    //2. put (updated) settings to url
     updateAllQueryParameters(settings)
 
     originalImage = new Image();

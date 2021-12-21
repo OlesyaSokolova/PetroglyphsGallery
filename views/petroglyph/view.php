@@ -24,7 +24,10 @@ JS;
 ?>
 
 <h1><?= $this->title ?></h1>
+
 <p>
+    <button type="button" class="btn btn-primary" id="reset-button">Сбросить настройки слоев</button>
+</p>
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
 

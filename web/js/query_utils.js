@@ -25,7 +25,7 @@ function updateOneQueryParameter(jsonSettings, layerId, key, value) {
     updateAllQueryParameters(jsonSettings)
 }
 
-function putSettingsAsQueryParameters(settings) {
+function updateSettingsFromQuery(settings) {
     let params = (new URL(document.location.href)).searchParams;
     const keysToUpdateValue = ["alpha", "color"];
     for (let i = 0; i < settings.drawings.length; i++) {
