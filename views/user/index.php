@@ -17,20 +17,31 @@ $this->title = 'Пользователи';
         <?= Html::a('Создать пользователя', ['create'], ['class' => 'btn btn-outline-primary btn-rounded']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            //TODO: добавить возможность менять пользователям пароль
+            [
+                'attribute'=> 'email',
+                'label' => 'Email',
+            ],
+            [
+                'attribute'=> 'first_name',
+                'label' => 'Имя',
+            ],
+            [
+                'attribute'=> 'last_name',
+                'label' => 'Фамилия',
+            ],
+            [
+                'attribute'=> 'patronymic',
+                'label' => 'Отчество',
+            ],
             //'auth_key',
             //'password_hash',
             //'password_reset_token',
-            'email:email',
+            //'email:email',
             //'status',
             //'created_at',
             //'updated_at',

@@ -12,6 +12,9 @@ use yii\web\IdentityInterface;
 * @property string $password_hash
 * @property string $password_reset_token
 * @property string $email
+* @property string $first_name //имя
+* @property string $last_name //фамилия
+* @property string $patronymic //отчество
 * @property string $auth_key
 * @property integer $status
 * @property integer $created_at
@@ -70,15 +73,28 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
+     * Finds user by email
      *
      * @param string $email
      * @return static|null
      */
-    public static function findByUsername($email)
+    public static function findByEmail($email)
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
+
+    /**
+     * Finds user by first_name
+     * //TODO: find user by first/last name & patronymic & email = one function!!
+     *
+     * @param string $first_name
+     * @return static|null
+     */
+    public static function findByFirstName($first_name)
+    {
+        return static::findOne(['first_name' => $first_name, 'status' => self::STATUS_ACTIVE]);
+    }
+
 
     /**
      * @inheritdoc

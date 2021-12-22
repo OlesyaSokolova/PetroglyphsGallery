@@ -11,10 +11,11 @@ use yii\widgets\ActiveForm;
 <div class="user-form">
 
     <?php $form = ActiveForm::begin(); ?>
-<!--TODO: добавить возможность присваивать пользователям роли (администратора?) и менять пароли
--->    <?= $form->field($model, 'id')->textInput() ?>
-    <?= $form->field($model, 'status')->textInput() ?>
-    <?= $form->field($model, 'email')->textInput() ?>
+
+    <?= $form->field($model, 'email')->textInput()->label("Email") ?>
+    <?= $form->field($model, 'first_name')->textInput()->label("Имя") ?>
+    <?= $form->field($model, 'last_name')->textInput()->label("Фамилия") ?>
+    <?= $form->field($model, 'patronymic')->textInput()->label("Отчество") ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-outline-primary btn-rounded']) ?>

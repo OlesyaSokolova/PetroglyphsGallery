@@ -22,7 +22,7 @@ class m211115_150543_create_users_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('users');
+        //$this->dropTable('users');
     }
 
     public function up()
@@ -35,7 +35,9 @@ class m211115_150543_create_users_table extends Migration
 
         $this->createTable('users', [
             'id' => $this->primaryKey(),
-            //'username' => $this->string()->notNull()->unique(),
+            'first_name' => $this->string()->notNull(),
+            'last_name' => $this->string()->notNull(),
+            'patronymic' => $this->string()->notNull(),
             'auth_key' => $this->string(32)->notNull(),
             'password_hash' => $this->string()->notNull(),
             'password_reset_token' => $this->string()->unique(),

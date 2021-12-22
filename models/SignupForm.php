@@ -11,8 +11,10 @@ class SignupForm extends Model
 {
 
     public $email;
+    public $first_name;
+    public $last_name;
+    public $patronymic;
     public $password;
-    public $passwordValidate;
 
     /**
      * @inheritdoc
@@ -21,13 +23,12 @@ class SignupForm extends Model
     {
         return [
             ['email', 'trim'],
-            ['email', 'required'],
+            [['email', 'first_name', 'last_name', 'patronymic'], 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Пользователь с таким e-mail уже существует.'],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Пользователь с таким email уже существует.'],
             ['password', 'required'],
-            ['password', 'string', 'min' => 6, 'message' => 'Пароль должен содержать минимум 6 символов.'],
-            ['passwordRepeat', 'required'],
+            ['password', 'string', 'min' => 6, 'message' => 'Пароль должен содержать минимум 6 символов.']
         ];
     }
 
@@ -43,8 +44,10 @@ class SignupForm extends Model
         }
 
         $user = new User();
-       // $user->username = $this->username;
         $user->email = $this->email;
+        $user->first_name = $this->first_name;
+        $user->last_name = $this->last_name;
+        $user->patronymic = $this->patronymic;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->save(false);
@@ -54,11 +57,10 @@ class SignupForm extends Model
         $auth->assign($authRole, $user->getId());
 
         return $user;
-
     }
 
     public function validate($attributeNames = null, $clearErrors = true)
     {
-        return parent::validate($attributeNames, $clearErrors) && $this->password == $this->passwordValidate;
+        return parent::validate($attributeNames, $clearErrors);
     }
 }

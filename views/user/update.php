@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
 
-$this->title = 'Обновить данные пользователя: ' . $model->id;
+$this->title = 'Обновить информацию о пользователе: ' .  $model->last_name . " " . $model->first_name . " " . $model->patronymic;
 ?>
 <div class="user-update">
 

@@ -5,7 +5,7 @@ return [
     'dsn' => 'mysql:host=localhost;dbname=petroglyphsdb',
     'username' => 'petroglyphs',
     'password' => 'petroglyphs',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,
