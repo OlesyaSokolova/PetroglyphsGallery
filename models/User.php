@@ -25,7 +25,6 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
-
     /**
      * @inheritdoc
      */
@@ -52,6 +51,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['password_hash', 'required', 'on' => 'insert'],
+            ['password_hash', 'string'],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
     }
@@ -82,19 +83,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
-
-    /**
-     * Finds user by first_name
-     * //TODO: find user by first/last name & patronymic & email = one function!!
-     *
-     * @param string $first_name
-     * @return static|null
-     */
-    public static function findByFirstName($first_name)
-    {
-        return static::findOne(['first_name' => $first_name, 'status' => self::STATUS_ACTIVE]);
-    }
-
 
     /**
      * @inheritdoc
@@ -147,10 +135,33 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $new_password
+     */
+    public function updatePassword($new_password)
+    {
+        $this->setPassword($new_password);
+    }
+
+    /**
      * Generates "remember me" authentication key
      */
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public function beforeSave($insert) {
+        if ($insert) {
+            $this->setPassword($this->password_hash);
+        } else {
+            if (!empty($this->password_hash)) {
+                $this->setPassword($this->password_hash);
+            } else {
+                $this->password_hash = (string) $this->getOldAttribute('password_hash');
+            }
+        }
+        return parent::beforeSave($insert);
     }
 }
