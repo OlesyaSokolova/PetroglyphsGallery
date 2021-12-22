@@ -14,7 +14,7 @@ if(!empty($petroglyph)) {
     settings = $petroglyph->settings
     drawingPathPrefix =  $drawingPathPrefix
    
-    window.onload =  prepareView
+    prepareView()
 
 JS;
 
