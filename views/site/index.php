@@ -31,9 +31,9 @@ $this->title = 'Петроглифы'; ?>
                         <div class="row">
                             <div class="thumbnail" style="background-image: url(<?= Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image ?>)"></div>
                         </div>
-                        <h3>
+                        <h5>
                             <?= $petroglyph->name ?>
-                        </h3>
+                        </h5>
                     </a>
               </div>
             <?php endforeach;

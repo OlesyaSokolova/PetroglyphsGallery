@@ -11,22 +11,32 @@ $this->title = 'Публикации';
 
 
 ?>
-
+<style>
+    .thumbnail {
+        background-color: white;
+        width: 300px;
+        height: 300px;
+        object-fit: contain;
+        display: inline-block; /* makes it fit in like an <img> */
+        background-size: contain; /* or contain */
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+</style>
 <h1>Мои публикации</h1>
 <div id="w0" class="list-view">
-    <?php if (!empty($petroglyphs)):
-        //var_dump($petroglyphs); ?>
+    <?php if (!empty($petroglyphs)):?>
         <div class="row petroglyphs" style="position: relative;">
             <?php foreach ($petroglyphs as $petroglyph): ?>
                 <div class="column">
                         <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
 
                         <div class="row">
-                            <?= Html::img(Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
+                            <div class="thumbnail" style="background-image: url(<?= Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image ?>)"></div>
                         </div>
-                        <h3>
+                        <h5>
                             <?= $petroglyph->name ?>
-                        </h3>
+                        </h5>
                     </a>
                 </div>
             <?php endforeach;
