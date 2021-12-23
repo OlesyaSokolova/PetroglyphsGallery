@@ -23,7 +23,7 @@ JS;
 }
 ?>
 
-<h1><?=$this->title?></h1>
+<h2><?=$this->title?></h2>
 
 <?php
 if (strcmp($petroglyph->settings ,'') != 0): ?>

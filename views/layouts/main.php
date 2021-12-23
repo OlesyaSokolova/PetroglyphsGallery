@@ -45,10 +45,10 @@ AppAsset::register($this);
     if (isset($userRoles['author']) || isset($userRoles['admin'])) {
         $menuItems[] = ['label' => 'Мои публикации', 'url' => ['/site/publications']];
     }
-    if (isset($userRoles['admin'])) {
+    /*if (isset($userRoles['admin'])) {
         //TODO: закрыть доступ к этой ссылке остальным пользователям
         $menuItems[] = ['label' => 'Администрирование', 'url' => ['/user/index']];
-    }
+    }*/
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems
@@ -92,7 +92,15 @@ AppAsset::register($this);
     </div>
 </main>
 
-<footer class="footer"  style="text-align: center;">
+<footer class="footer"  style="bottom: 0;
+width: 100%;
+text-align: center;
+vertical-align: bottom;
+
+position: relative;
+z-index: 1;
+
+margin:auto 0;">
     <div class="container">
         <p class="pull-left">Новосибирский Госудраственный Универститет, <?= date('Y') ?></p>
     </div>

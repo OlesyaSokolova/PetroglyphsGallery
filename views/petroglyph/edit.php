@@ -24,8 +24,8 @@ JS;
     $this->registerJs($script, yii\web\View::POS_READY);
 } ?>
 
-<h1><?=$this->title?>
-</h1>
+<h2><?=$this->title?>
+</h2>
 <p>
     <?php if (Yii::$app->user->can('updatePost',
         ['petroglyph' => $petroglyph])):?>
@@ -41,7 +41,7 @@ if ($petroglyph->settings != ''): ?>
 <form>
     <div class="form-group">
         <label for="name">Название экспоната: </label>
-        <input type="text" class="form-control" id="name" value="<?=$petroglyph->name?>">
+        <input type="text" style="size: auto" class="form-control" id="name" value="<?=$petroglyph->name?>">
     </div>
 </form>
 
@@ -60,12 +60,12 @@ if ($petroglyph->settings != ''): ?>
             </canvas>
         </div>
 
-        <form>
-            <div class="form-group">
-                <label for="mainDesc">Основное описание:</label>
-                <textarea class="form-control" id="mainDesc" rows="10"><?=$petroglyph->description?></textarea>
-            </div>
-        </form>
+         <form style="padding-top: 20px">
+                <div class="form-group">
+                    <label for="mainDesc">Основное описание:</label>
+                    <textarea class="form-control" id="mainDesc" rows="10" ><?=$petroglyph->description?></textarea>
+                </div>
+            </form>
     </div>
 
 
