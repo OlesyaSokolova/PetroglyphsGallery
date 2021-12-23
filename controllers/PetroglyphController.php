@@ -49,7 +49,6 @@ class PetroglyphController extends Controller
         $data = (!empty($_POST['params'])) ? json_decode($_POST['params'], true) : "empty params";
 
         $id = $data["id"];
-        //echo($id);
 
         $newName = $data["newName"];
         $newDescription = $data["newDescription"];
@@ -58,11 +57,11 @@ class PetroglyphController extends Controller
         $petroglyph->name = $newName;
         $petroglyph->description = $newDescription;
 
-        if (strcmp(json_encode($data["newSettings"]), "")) {
+        if (strcmp(json_encode($data["newSettings"]), "") != 2) {
             $newSettings = json_encode($data["newSettings"]);
             $petroglyph->settings = $newSettings;
         }
-        echo  $petroglyph->settings;
-        //$petroglyph->update();
+        //echo strcmp(json_encode($data["newSettings"]), "");
+        $petroglyph->update();
     }
 }

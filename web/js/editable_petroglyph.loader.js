@@ -70,7 +70,7 @@ function prepareEditablePetroglyph() {
         {
             settings = ''
         }
-        mainDescription = document.getElementById('mainDesc').textContent;
+        mainDescription = document.getElementById('mainDesc').value;
         name = document.getElementById('name').value;
         console.log(petroglyphId)
         var newData = {
@@ -84,7 +84,7 @@ function prepareEditablePetroglyph() {
             url: "/petroglyphs/web/index.php/petroglyph/save",
             data: {params: JSON.stringify(newData)},
             success: function (data) {
-                alert(data)
+                //alert(data)
                 location.href = "http://localhost/petroglyphs/web/index.php/petroglyph/view?id=" + petroglyphId
             },
             error: function (xhr, status, error) {

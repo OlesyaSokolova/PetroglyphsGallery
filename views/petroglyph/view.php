@@ -87,7 +87,6 @@ if (strcmp($petroglyph->settings ,'') != 0): ?>
 
 
 <?php
-var_dump($petroglyph->settings);
 if (strcmp($petroglyph->settings ,'') != 0): ?>
 
     <p style="margin-top: 20px">
