@@ -2,7 +2,7 @@ function prepareView() {
 
     //0.save settings for reset
     //defaultSettings = settings;
-    if(typeof settings != "undefined") {
+    if(typeof settings != "undefined" && settings !== ''  && settings !== "") {
         defaultSettings = JSON.parse(JSON.stringify(settings));
 
         //1. update settings from query (if exist)
@@ -19,7 +19,6 @@ function prepareView() {
             var drawingsImages = initDrawingsArray(jsonSettings = settings)
             addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
             initLayersSettings(jsonSettings = settings)
-            updateAllLayers(drawingsImages)
 
             classNameContainer = 'layers-class'
 

@@ -47,15 +47,22 @@ class PetroglyphController extends Controller
     public function actionSave()
     {
         $data = (!empty($_POST['params'])) ? json_decode($_POST['params'], true) : "empty params";
+
         $id = $data["id"];
+        //echo($id);
+
         $newName = $data["newName"];
         $newDescription = $data["newDescription"];
-        $newSettings = json_encode($data["newSettings"]);
 
         $petroglyph = Petroglyph::findOne($id);
         $petroglyph->name = $newName;
         $petroglyph->description = $newDescription;
-        $petroglyph->settings = $newSettings;
-        $petroglyph->update();
+
+        if (strcmp(json_encode($data["newSettings"]), "")) {
+            $newSettings = json_encode($data["newSettings"]);
+            $petroglyph->settings = $newSettings;
+        }
+        echo  $petroglyph->settings;
+        //$petroglyph->update();
     }
 }

@@ -11,10 +11,8 @@ if(!empty($petroglyph)) {
 
     $script = <<< JS
     originalImageSrc = $originalImageSrc
-     drawingPathPrefix =  $drawingPathPrefix
-    settings = $petroglyph->settings
-    console.log(typeof settings)
-   
+    drawingPathPrefix =  $drawingPathPrefix
+    settings = $petroglyph->settings   
    
     prepareView()
 
@@ -25,10 +23,10 @@ JS;
 }
 ?>
 
-<h1><?= $this->title ?></h1>
+<h1><?=$this->title?></h1>
 
 <?php
-if ($petroglyph->settings != ''): ?>
+if (strcmp($petroglyph->settings ,'') != 0): ?>
 <p>
     <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Отобразить авторские настройки</button>
 </p>
@@ -61,13 +59,14 @@ if ($petroglyph->settings != ''): ?>
 
     <?php
     //var_dump($petroglyph->settings);
-    if ($petroglyph->settings != ''): ?>
+    if (strcmp($petroglyph->settings ,'') != 0): ?>
         <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
         </div>
 
         <div id=layer_info style="border:1px solid black;
                 border-radius: 10px;
                 width: 700px;
+                padding-bottom: 20px;
                 height: fit-content;
                 text-align: center;
                 margin-bottom: 10px">
@@ -80,7 +79,7 @@ if ($petroglyph->settings != ''): ?>
     <?php
     else:  ?>
         <p style="margin-left: 30px">
-        <?= $petroglyph->description ?>
+        <?=$petroglyph->description?>
         </p>
     <?php endif; ?>
 
@@ -88,7 +87,9 @@ if ($petroglyph->settings != ''): ?>
 
 
 <?php
-if ($petroglyph->settings != ''): ?>
+var_dump($petroglyph->settings);
+if (strcmp($petroglyph->settings ,'') != 0): ?>
+
     <p style="margin-top: 20px">
         <?= $petroglyph->description ?>
     </p>

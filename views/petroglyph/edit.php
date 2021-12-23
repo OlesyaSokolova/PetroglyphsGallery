@@ -10,12 +10,13 @@ if(!empty($petroglyph)) {
     $drawingPathPrefix = "\"" . Petroglyph::PATH_STORAGE . Petroglyph::PATH_DRAWINGS . '/' . "\"";
 
     $script = <<< JS
-    petroglyphId = $petroglyph->id;
+    
+    petroglyphId = $petroglyph->id
     originalImageSrc = $originalImageSrc
-    settings = $petroglyph->settings
     drawingPathPrefix =  $drawingPathPrefix
+    settings = $petroglyph->settings
    
-   prepareEditablePetroglyph()
+    prepareEditablePetroglyph()
 
 JS;
 
@@ -31,11 +32,16 @@ JS;
         <button type="button" class="btn btn-outline-primary btn-rounded" id="save-button">Сохранить</button>
     <?php endif; ?>
 </p>
-
+<?php
+if ($petroglyph->settings != ''): ?>
+    <p>
+        <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Отобразить последние сохраненные настройки слоев</button>
+    </p>
+<?php endif; ?>
 <form>
     <div class="form-group">
         <label for="name">Название экспоната: </label>
-        <input type="text" class="form-control" id="name" value=" <?= $petroglyph->name ?>">
+        <input type="text" class="form-control" id="name" value="<?=$petroglyph->name?>">
     </div>
 </form>
 
@@ -57,15 +63,18 @@ JS;
         <form>
             <div class="form-group">
                 <label for="mainDesc">Основное описание:</label>
-                <textarea class="form-control" id="mainDesc" rows="10"><?= $petroglyph->description ?>"</textarea>
+                <textarea class="form-control" id="mainDesc" rows="10"><?=$petroglyph->description?></textarea>
             </div>
         </form>
     </div>
 
 
-    <div id="layers" class = "layers-class" style="
-        padding-left: 20px;">
-    </div>
+    <?php if (strcmp($petroglyph->settings ,'') != 0): ?>
+            <div id="layers" class = "layers-class" style="
+            padding-left: 20px;">
+            </div>
+    <?php endif; ?>
+
 </div>
 
 <!--<p>

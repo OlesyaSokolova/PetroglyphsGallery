@@ -1,61 +1,80 @@
 function prepareEditablePetroglyph() {
+    if(typeof settings != "undefined" && settings !== ''  && settings !== "") {
 
-    //1. update settings from query (if exist)
-    updateSettingsFromQuery(settings);
+        defaultSettings = JSON.parse(JSON.stringify(settings));
 
-    //2. put (updated) settings to url
-    updateAllQueryParameters(settings)
+        //1. update settings from query (if exist)
+        updateSettingsFromQuery(settings);
 
-    originalImage = new Image();
-    originalImage.src = originalImageSrc;
+        //2. put (updated) settings to url
+        updateAllQueryParameters(settings)
 
-    var drawingsImages = initDrawingsArray(jsonSettings = settings)
-    var originalImageCtx = drawOriginalImage(originalImage)
-    addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
-    initLayersSettingsForEdit(jsonSettings = settings)
+        originalImage = new Image();
+        originalImage.src = originalImageSrc;
 
-    classNameContainer = 'layers-class'
+        originalImage.onload = function () {
+            var originalImageCtx = drawOriginalImage(originalImage)
+            var drawingsImages = initDrawingsArray(jsonSettings = settings)
+            addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
+            initLayersSettingsForEdit(jsonSettings = settings)
 
-    $('.' + classNameContainer)
-        .on('input change', '.alpha-value', function () {
-            $(this).attr('value', $(this).val());
-            var newAlpha = parseFloat($(this).val());
-            var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
-            drawingsImages[drawingImageId].alpha = newAlpha;
-            updateAllLayers(drawingsImages)
-            updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
-        })
+            classNameContainer = 'layers-class'
 
-        .on('input change', '.color-value', function () {
-            $(this).attr('value', $(this).val());
-            var newColor = $(this).val();
-            var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
-            drawingsImages[drawingImageId].color = newColor;
-            updateAllLayers(drawingsImages)
-            updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
-        })
+            $('.' + classNameContainer)
+                .on('input change', '.alpha-value', function () {
+                    $(this).attr('value', $(this).val());
+                    var newAlpha = parseFloat($(this).val());
+                    var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
+                    drawingsImages[drawingImageId].alpha = newAlpha;
+                    updateAllLayers(drawingsImages)
+                    updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
+                })
 
-        /*.on('input change', '.title-value', function () {
-            $(this).attr('value', $(this).val());
-            var newTitle = $(this).val();
-            var titleId = parseInt(($(this).attr('id')).split('_')[1]);
-            var titleLabel = document.getElementById("descLabel_" + titleId)
-            titleLabel.innerText= newTitle + ':';
-        });*/
+                .on('input change', '.color-value', function () {
+                    $(this).attr('value', $(this).val());
+                    var newColor = $(this).val();
+                    var drawingImageId = parseInt(($(this).attr('id')).split('_')[1]);
+                    drawingsImages[drawingImageId].color = newColor;
+                    updateAllLayers(drawingsImages)
+                    updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
+                })
+
+            var resetButton = document.getElementById("reset-button");
+            resetButton.addEventListener('click', function (event) {
+                reloadSettingsForEdit(defaultSettings, drawingsImages)
+            })
+        }
+
+    }
+
+    else {
+        originalImage = new Image();
+        originalImage.src = originalImageSrc;
+
+        originalImage.onload = function () {
+            drawOriginalImage(originalImage)
+        }
+    }
 
     var saveButton = document.getElementById("save-button");
     saveButton.addEventListener('click', function (event) {
-        for (let i = 0; i < settings.drawings.length; i++) {
-            settings.drawings[i].layerParams.title = document.getElementById("title_" + i).value;
-            settings.drawings[i].layerParams.alpha = document.getElementById('alpha_' + i).value;
-            settings.drawings[i].layerParams.color = document.getElementById('color_' + i).value;
-            settings.drawings[i].layerParams.description = document.getElementById('desc_' + i).value;
+        if(typeof settings != 'undefined' && settings !== '' && settings !== "") {
+            for (let i = 0; i < settings.drawings.length; i++) {
+                settings.drawings[i].layerParams.title = document.getElementById("title_" + i).value;
+                settings.drawings[i].layerParams.alpha = document.getElementById('alpha_' + i).value;
+                settings.drawings[i].layerParams.color = document.getElementById('color_' + i).value;
+                settings.drawings[i].layerParams.description = document.getElementById('desc_' + i).value;
+            }
+        }
+        else
+        {
+            settings = ''
         }
         mainDescription = document.getElementById('mainDesc').textContent;
         name = document.getElementById('name').value;
-
+        console.log(petroglyphId)
         var newData = {
-            id: petroglyphId,
+            id: parseInt(petroglyphId),
             newName: name,
             newDescription: mainDescription,
             newSettings: settings,
@@ -64,7 +83,8 @@ function prepareEditablePetroglyph() {
             type: "POST",
             url: "/petroglyphs/web/index.php/petroglyph/save",
             data: {params: JSON.stringify(newData)},
-            success: function (data) {;
+            success: function (data) {
+                alert(data)
                 location.href = "http://localhost/petroglyphs/web/index.php/petroglyph/view?id=" + petroglyphId
             },
             error: function (xhr, status, error) {
@@ -72,6 +92,12 @@ function prepareEditablePetroglyph() {
             }
         });
     })
+}
+
+function reloadSettingsForEdit(defaultSettings, drawingsImages) {
+    initLayersSettingsForEdit(defaultSettings)
+    updateAllLayers(initDrawingsArray(defaultSettings))
+    updateAllQueryParameters(defaultSettings)
 }
 
 function initLayersSettingsForEdit(jsonSettings) {
