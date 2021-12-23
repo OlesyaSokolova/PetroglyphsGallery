@@ -43,7 +43,7 @@ class SiteController extends Controller
 
             try{
                 $user = $signupService->signup($form);
-                Yii::$app->session->setFlash('success', 'Check your email to confirm the registration.');
+                Yii::$app->session->setFlash('success', 'Проверьте свою почту для подтверждения регистрации.');
                 $signupService->sentEmailConfirm($user);
                 return $this->goHome();
             } catch (\RuntimeException $e){
@@ -129,7 +129,7 @@ class SiteController extends Controller
 
         try{
             $signupService->confirmation($token);
-            Yii::$app->session->setFlash('success', 'You have successfully confirmed your registration.');
+            Yii::$app->session->setFlash('success', 'Регистрация успешно подтверждена.');
         } catch (\Exception $e){
             Yii::$app->errorHandler->logException($e);
             Yii::$app->session->setFlash('error', $e->getMessage());

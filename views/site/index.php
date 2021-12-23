@@ -4,7 +4,6 @@
 
 use app\models\Petroglyph;
 use yii\bootstrap4\LinkPager;
-use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Петроглифы'; ?>
