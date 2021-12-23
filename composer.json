@@ -21,6 +21,7 @@
         "ext-gd": "*",
         "yiisoft/yii2-debug": "2.1.18",
       "ext-json": "*",
+        "philippfrenzel/yii2masonry": "*",
       "ext-imagick": "*"
     },
     "require-dev": {

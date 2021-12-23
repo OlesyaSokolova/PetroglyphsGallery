@@ -19,20 +19,17 @@ class SiteController extends Controller
         echo 'Управление пользователями доступно только администратору.';
     }
 
-    public function actionManageArticles()
-    {
-        echo 'Управление статьями доступно администратору и Автору материалов.';
-    }
     //const PAGE_LIMIT = 10;
     public function actionIndex()
     {
         $query = Petroglyph::find()
             ->orderBy(['id' => SORT_ASC]);
-        $pages = new Pagination(['totalCount' => $query->count()]);
-        //$pages = new Pagination(['totalCount' => 100]);
+        //$pages = new Pagination(['totalCount' => $query->count()]);
+        $pages = new Pagination(['totalCount' => 100]);
 
         $petroglyphs = $query->offset($pages->offset)
-            ->limit($pages->limit)
+            //->limit($pages->limit)
+            ->limit(8)
             ->all();
         return $this->render('index',[
             'petroglyphs' => $petroglyphs,

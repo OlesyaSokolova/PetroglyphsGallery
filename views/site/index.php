@@ -11,10 +11,11 @@ $this->title = 'Петроглифы'; ?>
 <style>
     .thumbnail {
         background-color: white;
-        width: 250px;
-        height: 200px;
+        width: 300px;
+        height: 300px;
+        object-fit: contain;
         display: inline-block; /* makes it fit in like an <img> */
-        background-size: cover; /* or contain */
+        background-size: contain; /* or contain */
         background-position: center center;
         background-repeat: no-repeat;
     }

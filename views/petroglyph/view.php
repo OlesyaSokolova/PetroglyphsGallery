@@ -30,7 +30,7 @@ JS;
 <?php
 if ($petroglyph->settings != ''): ?>
 <p>
-    <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Сбросить настройки слоев</button>
+    <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Отобразить авторские настройки</button>
 </p>
 <?php endif; ?>
 
