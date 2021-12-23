@@ -11,12 +11,12 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'modules' => [
+    /*'modules' => [
         'admin' => [
             'class' => 'app\modules\admin\Module',
             'layout' => 'main'
         ],
-    ],
+    ],*/
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -34,10 +34,19 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'encryption' => 'ssl',
+                'host' => 'smtp.gmail.com',
+                'port' => '465',
+                'username' => 'olesyasokolovatest@gmail.com',
+                'password' => 'vxucvwxvlppvqynp',
+            ],
+            //'viewPath' => 'app/mail/layouts',
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => true,
+            'useFileTransport' => false,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

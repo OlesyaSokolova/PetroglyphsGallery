@@ -35,9 +35,9 @@ class SignupForm extends Model
     /**
      * Signs user up.
      *
-     * @return User|null the saved model or null if saving fails
+     * @return bool the saved model or null if saving fails
      */
-    public function signup()
+    /*public function signup()
     {
         if (!$this->validate()) {
             return null;
@@ -57,7 +57,7 @@ class SignupForm extends Model
         $auth->assign($authRole, $user->getId());
 
         return $user;
-    }
+    }*/
 
     public function validate($attributeNames = null, $clearErrors = true)
     {

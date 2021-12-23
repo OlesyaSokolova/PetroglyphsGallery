@@ -4,12 +4,10 @@ namespace app\controllers;
 
 use app\models\Petroglyph;
 use app\models\SignupForm;
+use app\utils\SignupService;
 use Yii;
 use yii\data\Pagination;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
 use app\models\LoginForm;
 
 class SiteController extends Controller
@@ -39,18 +37,23 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $model = new SignupForm();
+        $form = new SignupForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $signupService = new SignupService();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+            try{
+                $user = $signupService->signup($form);
+                Yii::$app->session->setFlash('success', 'Check your email to confirm the registration.');
+                $signupService->sentEmailConfirm($user);
+                return $this->goHome();
+            } catch (\RuntimeException $e){
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
 
         return $this->render('signup', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -66,6 +69,27 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
+        $form = new LoginForm();
+        if ($form->load(Yii::$app->request->post())) {
+            try{
+                if($form->login()){
+                    return $this->goBack();
+                }
+            } catch (\DomainException $e){
+                Yii::$app->session->setFlash('error', $e->getMessage());
+                return $this->goHome();
+            }
+        }
+
+        $form->password = '';
+        return $this->render('login', [
+            'model' => $form,
+        ]);
+
+        /*if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -74,7 +98,7 @@ class SiteController extends Controller
         $model->password = '';
         return $this->render('login', [
             'model' => $model,
-        ]);
+        ]);*/
     }
 
     public function actionPublications()
@@ -97,5 +121,20 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionSignupConfirm($token)
+    {
+        $signupService = new SignupService();
+
+        try{
+            $signupService->confirmation($token);
+            Yii::$app->session->setFlash('success', 'You have successfully confirmed your registration.');
+        } catch (\Exception $e){
+            Yii::$app->errorHandler->logException($e);
+            Yii::$app->session->setFlash('error', $e->getMessage());
+        }
+
+        return $this->goHome();
     }
 }
