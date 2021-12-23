@@ -8,7 +8,17 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Петроглифы'; ?>
-
+<style>
+    .thumbnail {
+        background-color: white;
+        width: 250px;
+        height: 200px;
+        display: inline-block; /* makes it fit in like an <img> */
+        background-size: cover; /* or contain */
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+</style>
 <h1>Все петроглифы</h1>
 <div id="w0" class="list-view">
     <?php if (!empty($petroglyphs)):?>
@@ -18,7 +28,7 @@ $this->title = 'Петроглифы'; ?>
                        <a href="<?= Url::to(['petroglyph/view', 'id' => $petroglyph->id])?>" class="petroglyph-item">
 
                         <div class="row">
-                            <?= Html::img(Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image, ['class' => 'img-fluid mb-4']) ?>
+                            <div class="thumbnail" style="background-image: url(<?= Petroglyph::PATH_STORAGE.Petroglyph::PATH_IMAGES.'/'.$petroglyph->image ?>)"></div>
                         </div>
                         <h3>
                             <?= $petroglyph->name ?>
