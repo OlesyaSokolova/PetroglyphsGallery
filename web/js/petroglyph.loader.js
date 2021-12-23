@@ -2,64 +2,76 @@ function prepareView() {
 
     //0.save settings for reset
     //defaultSettings = settings;
-    defaultSettings = JSON.parse(JSON.stringify(settings));
+    if(typeof settings != "undefined") {
+        defaultSettings = JSON.parse(JSON.stringify(settings));
 
-    //1. update settings from query (if exist)
-    updateSettingsFromQuery(settings);
+        //1. update settings from query (if exist)
+        updateSettingsFromQuery(settings);
 
-    //2. put (updated) settings to url
-    updateAllQueryParameters(settings)
+        //2. put (updated) settings to url
+        updateAllQueryParameters(settings)
 
-    originalImage = new Image();
-    originalImage.src = originalImageSrc;
+        originalImage = new Image();
+        originalImage.src = originalImageSrc;
+        originalImage.onload = function () {
 
-    var drawingsImages = initDrawingsArray(jsonSettings = settings)
-    var originalImageCtx = drawOriginalImage(originalImage)
-    addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
-    initLayersSettings(jsonSettings = settings)
-
-    classNameContainer = 'layers-class'
-
-    $('.' + classNameContainer)
-        .on('input change', '.alpha-value', function () {
-            $(this).attr('value', $(this).val());
-            var newAlpha = parseFloat($(this).val());
-            var drawingImageId = parseInt($(this).attr('id'));
-            drawingsImages[drawingImageId].alpha = newAlpha;
+            var originalImageCtx = drawOriginalImage(originalImage)
+            var drawingsImages = initDrawingsArray(jsonSettings = settings)
+            addImagesToContext(imagesArray = drawingsImages, contextToDrawOn = originalImageCtx)
+            initLayersSettings(jsonSettings = settings)
             updateAllLayers(drawingsImages)
-            updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
-        })
-        .on('input change', '.color-value', function () {
-            $(this).attr('value', $(this).val());
-            var newColor = $(this).val();
-            var drawingImageId = parseInt($(this).attr('id'));
-            drawingsImages[drawingImageId].color = newColor;
-            updateAllLayers(drawingsImages)
-            updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
-        });
 
-    if (settings.drawings.length !== 0) {
-        var descriptionDiv = document.getElementById('description');
-        var layerTitle = document.getElementById('layer_title');
-        descriptionDiv.innerText = settings.drawings[0].layerParams.description;
-        document.getElementById('layer_' + 0).style.background = "#d6d5d5";
-        layerTitle.innerText = settings.drawings[0].layerParams.title
-    }
+            classNameContainer = 'layers-class'
 
-    var resetButton = document.getElementById("reset-button");
-    resetButton.addEventListener('click', function (event) {
-        reloadSettings(defaultSettings, drawingsImages)
+            $('.' + classNameContainer)
+                .on('input change', '.alpha-value', function () {
+                    $(this).attr('value', $(this).val());
+                    var newAlpha = parseFloat($(this).val());
+                    var drawingImageId = parseInt($(this).attr('id'));
+                    drawingsImages[drawingImageId].alpha = newAlpha;
+                    updateAllLayers(drawingsImages)
+                    updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "alpha", newValue = newAlpha);
+                })
+                .on('input change', '.color-value', function () {
+                    $(this).attr('value', $(this).val());
+                    var newColor = $(this).val();
+                    var drawingImageId = parseInt($(this).attr('id'));
+                    drawingsImages[drawingImageId].color = newColor;
+                    updateAllLayers(drawingsImages)
+                    updateOneQueryParameter(jsonSettings = settings, layerId = drawingImageId, key = "color", newValue = newColor);
+                });
 
-        if (settings.drawings.length !== 0) {
-            var descriptionDiv = document.getElementById('description');
-            var layerTitle = document.getElementById('layer_title');
-            descriptionDiv.innerText = settings.drawings[0].layerParams.description;
-            document.getElementById('layer_' + 0).style.background = "#d6d5d5";
-            layerTitle.innerText = settings.drawings[0].layerParams.title
+            if (settings.drawings.length !== 0) {
+                var descriptionDiv = document.getElementById('description');
+                var layerTitle = document.getElementById('layer_title');
+                descriptionDiv.innerText = settings.drawings[0].layerParams.description;
+                document.getElementById('layer_' + 0).style.background = "#d6d5d5";
+                layerTitle.innerText = settings.drawings[0].layerParams.title
+            }
+
+            var resetButton = document.getElementById("reset-button");
+            resetButton.addEventListener('click', function (event) {
+                reloadSettings(defaultSettings, drawingsImages)
+
+                if (settings.drawings.length !== 0) {
+                    var descriptionDiv = document.getElementById('description');
+                    var layerTitle = document.getElementById('layer_title');
+                    descriptionDiv.innerText = settings.drawings[0].layerParams.description;
+                    document.getElementById('layer_' + 0).style.background = "#d6d5d5";
+                    layerTitle.innerText = settings.drawings[0].layerParams.title
+                }
+            })
         }
-    })
-}
+    }
+    else {
+        originalImage = new Image();
+        originalImage.src = originalImageSrc;
 
+        originalImage.onload = function () {
+            drawOriginalImage(originalImage)
+        }
+    }
+}
 
 function reloadSettings(defaultSettings, drawingsImages) {
     initLayersSettings(defaultSettings)

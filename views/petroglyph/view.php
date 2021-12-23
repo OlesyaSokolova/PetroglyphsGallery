@@ -11,8 +11,10 @@ if(!empty($petroglyph)) {
 
     $script = <<< JS
     originalImageSrc = $originalImageSrc
+     drawingPathPrefix =  $drawingPathPrefix
     settings = $petroglyph->settings
-    drawingPathPrefix =  $drawingPathPrefix
+    console.log(typeof settings)
+   
    
     prepareView()
 
@@ -25,9 +27,12 @@ JS;
 
 <h1><?= $this->title ?></h1>
 
+<?php
+if ($petroglyph->settings != ''): ?>
 <p>
     <button type="button" class="btn btn-outline-primary btn-rounded" id="reset-button">Сбросить настройки слоев</button>
 </p>
+<?php endif; ?>
 
     <?php
     if (Yii::$app->user->can('updatePost',
@@ -54,28 +59,40 @@ JS;
         </div>
     </div>
 
-    <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
-    </div>
+    <?php
+    //var_dump($petroglyph->settings);
+    if ($petroglyph->settings != ''): ?>
+        <div style="padding-left: 20px; margin-right: 20px" id="layers" class = "layers-class">
+        </div>
 
-
-    <div id=layer_info style="border:1px solid black;
+        <div id=layer_info style="border:1px solid black;
                 border-radius: 10px;
                 width: 700px;
                 height: fit-content;
                 text-align: center;
                 margin-bottom: 10px">
 
-        <h5 id ="layer_title"> </h5>
+            <h5 id ="layer_title"> </h5>
 
-         <div id = "description" >
+            <div id = "description" >
+            </div>
         </div>
-</div>
+    <?php
+    else:  ?>
+        <p style="margin-left: 30px">
+        <?= $petroglyph->description ?>
+        </p>
+    <?php endif; ?>
 
 </div>
 
-<p style="margin-top: 20px">
-    <?= $petroglyph->description ?>
-</p>
+
+<?php
+if ($petroglyph->settings != ''): ?>
+    <p style="margin-top: 20px">
+        <?= $petroglyph->description ?>
+    </p>
+<?php endif; ?>
 
 <!--<p>
     ФИО автора: //$petroglyph->getAuthor()...

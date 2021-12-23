@@ -31,6 +31,7 @@ function drawImage(imageWithSettings, contextToDrawOn) {
     }
 }
 function initDrawingsArray(jsonSettings) {
+
     var drawingsJson = jsonSettings.drawings;
     var drawingsImages = []
     for (let i = 0; i < drawingsJson.length; i++) {
@@ -47,10 +48,11 @@ function initDrawingsArray(jsonSettings) {
 function drawOriginalImage(originalImage) {
 
     var canvas = document.getElementById('petroglyphCanvas')
-    //originalImage.width *= 0.1
-    //originalImage.height *= 0.1
-    canvas.width = originalImage.width*0.2
-    canvas.height = originalImage.height*0.2
+    var ratio = originalImage.width/originalImage.height
+    var constWidth = 700
+    var correspondingHeight = constWidth/ratio
+    canvas.width = constWidth
+    canvas.height = correspondingHeight
 
     originalImageCtx = canvas.getContext('2d');
     originalImageCtx.drawImage(originalImage, 0, 0,canvas.width,  canvas.height);
