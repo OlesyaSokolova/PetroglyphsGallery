@@ -61,6 +61,7 @@ JS;
     <div id=layer_info style="border:1px solid black;
                 border-radius: 10px;
                 width: 700px;
+                height: fit-content;
                 text-align: center;
                 margin-bottom: 10px">
 

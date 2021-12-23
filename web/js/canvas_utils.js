@@ -47,11 +47,13 @@ function initDrawingsArray(jsonSettings) {
 function drawOriginalImage(originalImage) {
 
     var canvas = document.getElementById('petroglyphCanvas')
-    canvas.width = originalImage.width/100
-    canvas.height = originalImage.height/100
+    //originalImage.width *= 0.1
+    //originalImage.height *= 0.1
+    canvas.width = originalImage.width*0.2
+    canvas.height = originalImage.height*0.2
 
     originalImageCtx = canvas.getContext('2d');
-    originalImageCtx.drawImage(originalImage, 0, 0);
+    originalImageCtx.drawImage(originalImage, 0, 0,canvas.width,  canvas.height);
 
     return originalImageCtx
 }
