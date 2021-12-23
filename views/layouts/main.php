@@ -102,7 +102,7 @@ z-index: 1;
 
 margin:auto 0;">
     <div class="container">
-        <p class="pull-left">Новосибирский Госудраственный Универститет, <?= date('Y') ?></p>
+        <p class="pull-left">Новосибирский Государственный Универститет, <?= date('Y') ?></p>
     </div>
 </footer>
 
