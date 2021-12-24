@@ -41,7 +41,7 @@ use yii\helpers\FileHelper;
 
 class Petroglyph extends ActiveRecord
 {
-    const PATH_STORAGE = 'http://localhost/petroglyphs/storage/';
+    const PATH_STORAGE = 'http://localhost/PetroglyphsGallery/storage/';//change to real folder name
     const PATH_IMAGES = 'images';//folder with original images
     const PATH_DRAWINGS = 'drawings';//folder with drawings
 
