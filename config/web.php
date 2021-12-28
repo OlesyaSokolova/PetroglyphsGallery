@@ -39,8 +39,8 @@ $config = [
                 'encryption' => 'ssl',
                 'host' => 'smtp.gmail.com',
                 'port' => '465',
-                'username' => 'olesyasokolovatest@gmail.com',
-                'password' => 'vxucvwxvlppvqynp',
+                'username' => '******',
+                'password' => '******',
             ],
             //'viewPath' => 'app/mail/layouts',
             // send all mails to a file by default. You have to set
